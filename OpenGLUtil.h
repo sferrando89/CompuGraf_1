@@ -1,3 +1,4 @@
+#pragma once
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <gl\GL.h>

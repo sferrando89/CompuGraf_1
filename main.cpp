@@ -1,4 +1,6 @@
 #include "OpenGLUtil.h"
+#include "GameManager.h"
+#include "InputHandler.h"
 #include <iostream>
 #include <cmath>
 
@@ -10,6 +12,9 @@
 using namespace std;
 
 int main(int argc[], char* args[]) {
+
+	InputHandler inputHandler = InputHandler();
+	GameManager* gameManager = GameManager::GetInstance();
 
     if (!initSDL())
     {
@@ -26,17 +31,6 @@ int main(int argc[], char* args[]) {
         return 1;
     }
 	
-	float delta = M_PI / 90;
-
-	//coordenadas esfericas:
-	float x = 0;
-	float y = 0;
-	float z = 0;
-
-	float r = S_RADIO;
-	float phi = M_PI/4;
-	float theeta = M_PI/4;
-
 	//bandera que controla el loop principal
     bool quit = false;
 
@@ -45,74 +39,17 @@ int main(int argc[], char* args[]) {
     while (!quit)
     {
 
-		/* Control de eventos */
-        while (SDL_PollEvent(&evento))
-        {
-			if (evento.type == SDL_QUIT)
-			{
-				quit = true;
-				break;
-			}
+		inputHandler.Handle();
 
-			if (evento.type == SDL_KEYDOWN)
-			{
-				/* Check the SDLKey values and move change the coords */
-				switch (evento.key.keysym.sym) {
-					case SDLK_ESCAPE:
-						quit = true;
-						break;
-					case SDLK_LEFT:
-						theeta -= delta;
-						break;
-					case SDLK_RIGHT:
-						theeta += delta;
-						break;
-					case SDLK_UP:
-						phi += delta;
-						break;
-					case SDLK_DOWN:
-						phi -= delta;
-						break;
-					}
-					break;
-			}
-			if (evento.type == SDL_KEYUP)
-			{
-				switch (evento.key.keysym.sym)
-				{
-					case SDLK_LEFT:
-						break;
-					case SDLK_RIGHT:
-						break;
-					case SDLK_UP:
-						break;
-					case SDLK_DOWN:
-						break;
-				}
-				break;
-
-			}
-            
+		if (gameManager->CheckWinCondition() ){
+			// Gano
+			cout << "Partida ganada!";
 		}
-
-		if (theeta >= 2 * M_PI)
-			theeta = 0;
-		if (phi > M_PI)
-			phi = 0;
-
-
-		x = r * sin(theeta) * sin(phi);
-		y = r * cos(phi);
-		z = r * cos(theeta) * sin(phi);
-
-		glLoadIdentity();
-		gluLookAt(x, y, z, 0, -10, 0, 0, 1, 0);
 
 		//Render quad
 		render();
 		
     }
-
 
 	return 0;
 }
