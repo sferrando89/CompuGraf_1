@@ -12,6 +12,9 @@ SDL_GLContext gContext;
 
 bool firstdraw = false;
 
+Player player = GameManager::GetInstance()->getPlayer();
+Map map = GameManager::GetInstance()->getGameMap();
+
 bool initGL() {
 	//Initialize Projection Matrix
 
@@ -30,7 +33,7 @@ bool initGL() {
 	glEnable(GL_DEPTH_TEST);
 
 	glLoadIdentity();
-	gluLookAt(0, 0, S_RADIO, 0, 0, 0, 0, 0, 1);
+	gluLookAt(S_RADIO, 0, 0, player.position_m, player.position_n, player.position_o, 0, 0, 1);
 
 	//Check For Error
 	GLenum error = glGetError();
@@ -94,9 +97,6 @@ void update()
 
 void render()
 {
-
-	Map map = GameManager::GetInstance()->getGameMap();
-
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	for (int i = 0; i < map.size_m; i++) 
