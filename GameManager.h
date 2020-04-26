@@ -18,4 +18,6 @@ class GameManager
         static GameManager* GetInstance();
 		void HandleMovement(SDL_Keycode key);
 		bool CheckWinCondition();
+        Map getGameMap();
+        Player getPlayer();
 };

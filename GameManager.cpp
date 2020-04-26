@@ -14,12 +14,12 @@ GameManager* GameManager::GetInstance() {
 GameManager::GameManager()
 {
 	//HARDCODEADO EL MAPA PRINCIPAL
-	gameMap = Map(4, 4, { {4,0,0,0},
-						{3,3,0,0},
-						{2,2,2,0},
-						{1,1,1,1} });
+	gameMap = Map(4, 4, { {1,2,3,4},
+						  {1,2,3,4},
+		                  {1,2,3,4},
+		                  {1,2,3,4} });
 
-	Player player(0,0,Direction_x::left, Direction_y::down);
+	Player player(0,0,0,Direction_x::left, Direction_y::down);
 	cout << player.position_n << "\n";
 
 	gameMap.PrintWithCharacter(0,0);
@@ -87,4 +87,14 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 bool GameManager::CheckWinCondition()
 {
 	return gameMap.AllCubesPainted();
+}
+
+Map GameManager::getGameMap()
+{
+	return this->gameMap;
+}
+
+Player GameManager::getPlayer()
+{
+	return this->player;
 }

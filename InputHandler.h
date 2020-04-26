@@ -15,6 +15,6 @@ class InputHandler
 		int previous_x, previous_y;
 	public:
 		InputHandler();
-		void Handle();
+		bool Handle();
 };
 

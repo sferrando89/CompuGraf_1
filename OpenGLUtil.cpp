@@ -1,4 +1,5 @@
 #include "OpenGLUtil.h"
+#include "GameManager.h"
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -29,7 +30,7 @@ bool initGL() {
 	glEnable(GL_DEPTH_TEST);
 
 	glLoadIdentity();
-	gluLookAt(0, 0, S_RADIO, 0, -10, 0, 0, 1, 0);
+	gluLookAt(0, 0, S_RADIO, 0, 0, 0, 0, 0, 1);
 
 	//Check For Error
 	GLenum error = glGetError();
@@ -91,55 +92,55 @@ void update()
 
 }
 
-void render() 
+void render()
 {
 
-	float tamañoCubo = 2;
-	float cantidadCubos = 1;
+	Map map = GameManager::GetInstance()->getGameMap();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//Render Quad
-	for (int j = 0; j < 7; j++)
+	for (int i = 0; i < map.size_m; i++) 
 	{
-		cantidadCubos = j + 1;
-		for (int i = 0; i < cantidadCubos; i++)
+		for (int j = 0; j < map.size_n; j++) 
 		{
-			glBegin(GL_QUADS);
-			glColor3f(0, 0, 1); //AZUL
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // top left
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // bottom left
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // bottom right
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // top right 
-			glColor3f(0, 1, 0); //VERDE
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, 0 + i * tamañoCubo); // top left
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, 0 + i * tamañoCubo); // bottom left
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// bottom right
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// top right 
-			glColor3f(0, 1, 1); //CELESTE
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// top left
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// bottom left
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// bottom right
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// top right 
-			glColor3f(1, 0, 0); //ROJO
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// top left
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// bottom left
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // bottom right
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // top right
-			glColor3f(1, 0, 1); //VIOLETA
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// top left
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // bottom left
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // bottom right
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, 1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// top right
-			glColor3f(1, 1, 0); //VIOLETA
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // top left
-			glVertex3f(-1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// bottom left
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, -2.0f + i * tamañoCubo);// bottom right
-			glVertex3f(1 + i * tamañoCubo - j * tamañoCubo, -1.0f - j * tamañoCubo, 0.0f + i * tamañoCubo); // top right
-			glEnd();
+			if (map.GetCubeHeight(j, i) != 0)
+			{
+				glBegin(GL_QUADS);
+				glColor3f(0, 0, 1); // AZUL
+				glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+				glVertex3f(j, i, map.GetCubeHeight(j, i));
+				glColor3f(0, 1, 0); //VERDE
+				glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+				glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+				glColor3f(0, 1, 1); //CELESTE
+				glVertex3f(j, i, map.GetCubeHeight(j, i));
+				glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+				glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+				glColor3f(1, 0, 0); //ROJO
+				glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+				glColor3f(1, 0, 1); //VIOLETA
+				glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+				glVertex3f(j, i, map.GetCubeHeight(j, i));
+				glColor3f(1, 1, 0); //MARRON
+				glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+				glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+				glEnd();
+			}			
+			
 		}
 	}
-
 	//Update screen
 	SDL_GL_SwapWindow(gWindow);
 

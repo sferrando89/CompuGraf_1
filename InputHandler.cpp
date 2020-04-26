@@ -6,17 +6,20 @@ InputHandler::InputHandler()
 	//Camera* camera = Camera::GetInstance();
 }
 
-void InputHandler::Handle() {
+bool InputHandler::Handle() {
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
 		{
-			//quit = true;
-			break;
+			return true;
 		}
 
 		if (event.type == SDL_KEYDOWN)
 		{
+			if (event.key.keysym.sym == SDLK_q) {
+				return true;
+			}
+
 			GameManager::GetInstance()->HandleMovement(event.key.keysym.sym);
 			
 		}
@@ -36,28 +39,30 @@ void InputHandler::Handle() {
 		}
 		if (mousePressed)
 		{
-			int delta_x = 0;
-			int delta_y = 0;
+			int dir_t = 0;
+			int dir_p = 0;
 			int x, y;
+
 			SDL_GetMouseState(&x, &y);
-			cout << x;
+			
 			if (x < previous_x) {
-				delta_x = -1;
+				dir_t = -1;
 			}
-			else if (x > delta_x) {
-				delta_x = 1;
+			else if (x > dir_t) {
+				dir_t = 1;
 			}
 
 			if (y < previous_y) {
-				delta_y = -1;
+				dir_p = -1;
 			}
 			else if (y > previous_y) {
-				delta_y = 1;
+				dir_p = 1;
 			}
 			previous_x = x;
 			previous_y = y;
-			Camera::GetInstance()->Rotate(delta_x, delta_y);
+			Camera::GetInstance()->Rotate(dir_t, dir_p);
 		}
 
+		return false;
 	}
 }
