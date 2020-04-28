@@ -33,11 +33,11 @@ int main(int argc[], char* args[]) {
 	
 	//bandera que controla el loop principal
     bool quit = false;
-    bool pause = false;
+    
     while (!quit)
     {
 
-		inputHandler->Handle(quit,pause);
+	    quit = 	inputHandler->Handle();
 
 		if (gameManager->CheckWinCondition() ){
 			// Gano
@@ -45,8 +45,7 @@ int main(int argc[], char* args[]) {
 		}
 
 		//Render quad
-        if (!pause)
-		    render();
+        render();
 		
     }
 
