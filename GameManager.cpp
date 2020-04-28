@@ -2,6 +2,7 @@
 
 GameManager* GameManager::instance = NULL;
 
+int points = 0;
 
 GameManager* GameManager::GetInstance() {
 	if (!instance) {
@@ -43,7 +44,9 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 					&& player.position_n > 0 // No esta en el borde izquierdo del mapa
 					&& gameMap.GetCubeHeight(player.position_m - 1, player.position_n - 1) > 0) // Hay un bloque en la direccion a saltar
 				{
-					gameMap.PaintCube(player.position_m, player.position_n); // Pinto el bloque actual
+					if (gameMap.PaintCube(player.position_m, player.position_n)) {
+						points++;
+					}; // Pinto el bloque actual y gano puntos
 					player.position_m = player.position_m - 1; // Muevo el personaje
 					player.position_n = player.position_n - 1;
 				}
@@ -51,7 +54,9 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 					&& player.position_n < gameMap.size_n - 1 // No esta en el borde derecho del mapa
 					&& gameMap.GetCubeHeight(player.position_m - 1, player.position_n) > 0) // Hay un bloque en la direccion a saltar
 				{	
-					gameMap.PaintCube(player.position_m, player.position_n); // Pinto el bloque actual
+					if (gameMap.PaintCube(player.position_m, player.position_n)) {
+						points++;
+					}; // Pinto el bloque actual y gano puntos
 					player.position_m = player.position_m - 1; // Muevo el personaje
 				}
 			}

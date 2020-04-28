@@ -25,9 +25,12 @@ int Map::GetCubeHeight(int i, int j) {
 	return matrix[i][j].h;
 }
 
-void Map::PaintCube(int i, int j)
-{
+bool Map::PaintCube(int i, int j){
+	if (matrix[i][j].painted) {
+		return false;
+	}
 	matrix[i][j].painted = true;
+	return true;
 }
 
 bool Map::AllCubesPainted() {
