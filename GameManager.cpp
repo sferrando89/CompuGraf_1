@@ -46,10 +46,15 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 		case SDLK_w:
 			if (player.direction == Direction::up) 
 			{
-				if (player.position_n < gameMap.size_n -1) 
+				if (player.position_y < gameMap.size_n -1) 
 				{
-					gameMap.PaintCube(player.position_m, player.position_n);
-					player.position_n += 1;
+					int new_x = player.position_x;
+					int new_y = player.position_y+1;
+					if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
+						player.position_x = new_x;
+						player.position_y = new_y;
+						gameMap.PaintCube(player.position_x, player.position_y);
+					}
 				}
 			}
 			else
@@ -60,10 +65,15 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 		case SDLK_a:
 			if (player.direction == Direction::left) 
 			{
-				if (player.position_m > 0)
+				if (player.position_x > 0)
 				{
-					gameMap.PaintCube(player.position_m, player.position_n);
-					player.position_m -= 1;
+					int new_x = player.position_x - 1;
+					int new_y = player.position_y;
+					if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
+						player.position_x = new_x;
+						player.position_y = new_y;
+						gameMap.PaintCube(player.position_x, player.position_y);
+					}
 				}
 			}
 			else
@@ -74,10 +84,15 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 		case SDLK_d:
 			if (player.direction == Direction::right) 
 			{
-				if (player.position_m < gameMap.size_m -1) 
+				if (player.position_x < gameMap.size_m -1) 
 				{
-					gameMap.PaintCube(player.position_m, player.position_n);
-					player.position_m += 1;
+					int new_x = player.position_x + 1;
+					int new_y = player.position_y;
+					if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
+						player.position_x = new_x;
+						player.position_y = new_y;
+						gameMap.PaintCube(player.position_x, player.position_y);
+					}
 				}
 			}
 			else
@@ -88,10 +103,15 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 		case SDLK_s:
 			if (player.direction == Direction::down)
 			{
-				if (player.position_n > 0)
+				if (player.position_y > 0)
 				{
-					gameMap.PaintCube(player.position_m, player.position_n);
-					player.position_n -= 1;
+					int new_x = player.position_x;
+					int new_y = player.position_y-1;
+					if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
+						player.position_x = new_x;
+						player.position_y = new_y;
+						gameMap.PaintCube(player.position_x, player.position_y);
+					}
 				}
 			}
 			else
