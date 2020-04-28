@@ -15,7 +15,6 @@ GameManager* GameManager::GetInstance() {
 		instance = new GameManager;
 	}
 	return instance;
-
 }
 
 GameManager::GameManager()
@@ -35,7 +34,7 @@ GameManager::GameManager()
 	//cout << player.position_n << "\n";
 	//cout << player.direction << "\n";
 	//cout << "----------------" << "\n";
-
+	
 	gameMap.PrintWithCharacter(0,0);
 }
 
@@ -195,4 +194,23 @@ Map GameManager::getGameMap()
 Player GameManager::getPlayer()
 {
 	return this->player;
+}
+
+void GameManager::switchTimer(){
+	if (timer.isStarted())
+	{
+		timer.stop();
+	}
+	else
+	{
+		timer.start();
+	}
+}
+
+bool GameManager::isPaused() {
+	return !timer.isStarted();
+}
+
+Uint32 GameManager::elapsedTIme() {
+	return timer.getTicks();
 }

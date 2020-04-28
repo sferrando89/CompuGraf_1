@@ -144,6 +144,7 @@
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InputHandler.cpp" />
+    <ClCompile Include="LTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="OpenGLUtil.cpp" />
@@ -154,6 +155,7 @@
     <ClInclude Include="Camera.h" />
     <ClInclude Include="GameManager.h" />
     <ClInclude Include="InputHandler.h" />
+    <ClInclude Include="LTimer.h" />
     <ClInclude Include="Map.h" />
     <ClInclude Include="OpenGLUtil.h" />
     <ClInclude Include="Player.h" />

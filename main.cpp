@@ -36,9 +36,10 @@ int main(int argc[], char* args[]) {
 
     while (!quit)
     {
+        quit = inputHandler->Handle();
 
-		quit = inputHandler->Handle();
-
+        /*cout << gameManager->elapsedTIme();
+        cout << "\n";*/
 		if (gameManager->CheckWinCondition() ){
 			// Gano
 			cout << "Partida ganada!";
