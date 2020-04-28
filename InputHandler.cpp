@@ -29,6 +29,7 @@ bool InputHandler::Handle() {
 			if (event.key.keysym.sym == SDLK_q) {
 				return true;
 			}
+
 			else if (event.key.keysym.sym == SDLK_c)
 			{
 				settingsOn = !settingsOn;
