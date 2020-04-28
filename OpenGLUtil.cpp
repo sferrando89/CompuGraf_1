@@ -1,5 +1,6 @@
 #include "OpenGLUtil.h"
 #include "GameManager.h"
+#include "InputHandler.h"
 
 
 //The window we'll be rendering to
@@ -10,6 +11,8 @@ SDL_Surface* gScreenSurface = NULL;
 
 //OpenGL context
 SDL_GLContext gContext;
+
+TTF_Font* font;
 
 bool firstdraw = false;
 
@@ -95,12 +98,35 @@ bool initSDL()
 		return(false);
 	}
 
+	//Initialize font library
+	if (TTF_Init() == -1) {
+		printf("TTF_Init: %s\n", TTF_GetError());
+		return false;
+	}
+	font = TTF_OpenFont("fonts/pixeldroidBoticRegular.ttf", 16);
+	std::cout << TTF_GetError() << std::endl;
+
 	return true;
 }
 
 void update()
 {
 
+}
+
+void updateCamera2d()
+{
+}
+
+void updateCamera3d()
+{
+	if (InputHandler::GetInstance()->mousePressed)
+	{
+		Camera::GetInstance()->Rotate(InputHandler::GetInstance()->dir_t, 
+										InputHandler::GetInstance()->dir_p);
+
+	}
+	Camera::GetInstance()->apply();
 }
 
 void renderMap()
@@ -208,15 +234,14 @@ void renderMap()
 
 }
 
-
 void renderPlayer()
 {
 	Player player = GameManager::GetInstance()->getPlayer();
 
-	cout << player.position_m << "\n";
-	cout << player.position_n << "\n";
-	cout << player.direction << "\n";
-	cout << "----------------" << "\n";
+	//cout << player.position_m << "\n";
+	//cout << player.position_n << "\n";
+	//cout << player.direction << "\n";
+	//cout << "----------------" << "\n";
 
 	int j = player.position_m;
 	int i = player.position_n;
@@ -330,16 +355,104 @@ void renderEnemy()
 {
 }
 
+void renderText()
+{
+
+	glEnable(GL_TEXTURE_2D);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	GLuint texture;
+	glGenTextures(1, &texture);
+	glBindTexture(GL_TEXTURE_2D, texture);
+
+	SDL_Color color = { 255, 0, 0};
+
+	SDL_Surface* sFont = TTF_RenderText_Blended(font, "holaaaaaa", color);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sFont->w, sFont->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, sFont->pixels);
+
+	int x = 0;
+	int y = 0;
+
+	glBegin(GL_QUADS);
+	
+		glTexCoord2f(0, 0); glVertex2f(0.0, 0.0);
+		glTexCoord2f(1, 0); glVertex2f(100.0, 0.0);
+		glTexCoord2f(1, 1); glVertex2f(100.0, 50.0);
+		glTexCoord2f(0, 1); glVertex2f(0.0, 50.0);
+	
+	glEnd();
+
+	glBegin(GL_QUADS);
+	glColor3f(1.0f, 0.0f, 0.0);
+	glVertex2f(0.0, 0.0);
+	glVertex2f(100.0, 0.0);
+	glVertex2f(100.0, 50.0);
+	glVertex2f(0.0, 50.0);
+	glEnd();
+
+	glDisable(GL_BLEND);
+	glDisable(GL_TEXTURE_2D);
+
+
+}
+
+void renderHud()
+{
+	
+	glBegin(GL_QUADS);
+	glColor3f(1.0f, 0.0f, 0.0);
+	glVertex2f(0.0, 0.0);
+	glVertex2f(100.0, 0.0);
+	glVertex2f(100.0, 50.0);
+	glVertex2f(0.0, 50.0);
+	glEnd();
+
+}
 
 void render()
 {
 	//Clean Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	
+	//Dibujado de objetos 3D
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	gluPerspective(800, SCREEN_WIDTH / SCREEN_HEIGHT, 0.8, 100);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	updateCamera3d();
 
 	renderMap();
 	renderPlayer();
 	renderEnemy();
 
+	//Dibujado de objetos 2D (HUD)
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 1);
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+	
+	// Desactivo el depth_test para que el hud se dibuje por delante
+	glDisable(GL_DEPTH_TEST);
+
+	if (InputHandler::GetInstance()->settingsOn)
+	{
+		renderText();
+	}
+	else
+	{
+		renderHud();
+	}
+
+	glEnable(GL_DEPTH_TEST);
 	//Update screen
 	SDL_GL_SwapWindow(gWindow);
 }

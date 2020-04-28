@@ -29,7 +29,12 @@ Camera::Camera()
 	phi = M_PI / 2;
 	r = S_RADIO;
 	delta = M_PI / 90;
+	x = S_RADIO;
+	y = 0;
+	z = 0;
 }
+
+
 
 void Camera::Rotate(float dir_x, float dir_y)
 {
@@ -49,9 +54,9 @@ void Camera::Rotate(float dir_x, float dir_y)
 	}
 	*/
 	
-	float x = r * cos(theeta) * sin(phi);
-	float y = r * sin(theeta) * sin(phi);
-	float z = r * cos(phi);
+	x = r * cos(theeta) * sin(phi);
+	y = r * sin(theeta) * sin(phi);
+	z = r * cos(phi);
 
 	/*
 	if (z < 0) {
@@ -59,8 +64,15 @@ void Camera::Rotate(float dir_x, float dir_y)
 	}
 	*/
 
-	glLoadIdentity();
-	gluLookAt(x, y, z, player.position_m, player.position_n, player.position_o, 0, 0, z_up);
+	//glLoadIdentity();
+	//gluLookAt(x, y, z, player.position_m, player.position_n, player.position_o, 0, 0, z_up);
 	
 }
 
+void Camera::apply()
+{
+	Player player = GameManager::GetInstance()->getPlayer();
+	glLoadIdentity();
+	float z_up = 1;
+	gluLookAt(x, y, z, player.position_m, player.position_n, player.position_o, 0, 0, z_up);
+}

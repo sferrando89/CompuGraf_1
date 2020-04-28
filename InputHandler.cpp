@@ -1,11 +1,17 @@
 #include "InputHandler.h"
 
+InputHandler* InputHandler::instance = 0;
 
+InputHandler* InputHandler::GetInstance() {
+	if (!instance) {
+		instance = new InputHandler;
+	}
+	return instance;
+}
 
 InputHandler::InputHandler()
 {
-	//GameManager* gameManager = GameManager::GetInstance();
-	//Camera* camera = Camera::GetInstance();
+
 }
 
 bool InputHandler::Handle() {
@@ -19,8 +25,13 @@ bool InputHandler::Handle() {
 
 		if (event.type == SDL_KEYDOWN)
 		{
+
 			if (event.key.keysym.sym == SDLK_q) {
 				return true;
+			}
+			else if (event.key.keysym.sym == SDLK_c)
+			{
+				settingsOn = !settingsOn;
 			}
 			
 			GameManager::GetInstance()->HandleMovement(event.key.keysym.sym);
@@ -42,17 +53,21 @@ bool InputHandler::Handle() {
 		}
 		if (mousePressed)
 		{
-			int dir_t = 0;
-			int dir_p = 0;
+			dir_t = 0;
+			dir_p = 0;
 			int x, y;
 
 			SDL_GetMouseState(&x, &y);
-			
+
 			if (x < previous_x) {
 				dir_t = -1;
 			}
-			else if (x > dir_t) {
+			else if (x > previous_x) {
 				dir_t = 1;
+			}
+			else
+			{
+				dir_t = 0;
 			}
 
 			if (y < previous_y) {
@@ -61,9 +76,13 @@ bool InputHandler::Handle() {
 			else if (y > previous_y) {
 				dir_p = 1;
 			}
+			else
+			{
+				dir_p = 0;
+			}
+
 			previous_x = x;
 			previous_y = y;
-			Camera::GetInstance()->Rotate(dir_t, dir_p);
 		}
 
 		return false;

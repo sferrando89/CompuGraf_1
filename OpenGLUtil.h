@@ -1,6 +1,7 @@
 #pragma once
 #include <SDL.h>
 #include <SDL_opengl.h>
+#include <SDL_ttf.h>
 #include <gl\GL.h>
 #include <gl\GLU.h>
 #include <stdio.h>
@@ -51,6 +52,12 @@ Side Effects:
  -Swaps the front/back buffer
 */
 
+void updateCamera3d();
+void updateCamera2d();
+
+void renderText();
+
+void renderHud();
 
 void renderMap();
 

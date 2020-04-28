@@ -13,7 +13,7 @@ using namespace std;
 
 int main(int argc[], char* args[]) {
 
-	InputHandler inputHandler = InputHandler();
+	InputHandler* inputHandler = InputHandler::GetInstance();
 	GameManager* gameManager = GameManager::GetInstance();
 
     if (!initSDL())
@@ -37,7 +37,7 @@ int main(int argc[], char* args[]) {
     while (!quit)
     {
 
-		quit = inputHandler.Handle();
+		quit = inputHandler->Handle();
 
 		if (gameManager->CheckWinCondition() ){
 			// Gano

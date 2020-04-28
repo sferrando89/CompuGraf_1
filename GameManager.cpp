@@ -29,10 +29,10 @@ GameManager::GameManager()
 	this->player = Player(0, 0, 0, Direction::right);
 	//Player player(0, 0, 0, Direction::right);
 
-	cout << player.position_m << "\n";
-	cout << player.position_n << "\n";
-	cout << player.direction << "\n";
-	cout << "----------------" << "\n";
+	//cout << player.position_m << "\n";
+	//cout << player.position_n << "\n";
+	//cout << player.direction << "\n";
+	//cout << "----------------" << "\n";
 
 	gameMap.PrintWithCharacter(0,0);
 }
@@ -46,6 +46,7 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 			{
 				if (player.position_n < gameMap.size_n -1) 
 				{
+					gameMap.PaintCube(player.position_m, player.position_n);
 					player.position_n += 1;
 				}
 			}
@@ -59,6 +60,7 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 			{
 				if (player.position_m > 0)
 				{
+					gameMap.PaintCube(player.position_m, player.position_n);
 					player.position_m -= 1;
 				}
 			}
@@ -72,6 +74,7 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 			{
 				if (player.position_m < gameMap.size_m -1) 
 				{
+					gameMap.PaintCube(player.position_m, player.position_n);
 					player.position_m += 1;
 				}
 			}
@@ -85,6 +88,7 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 			{
 				if (player.position_n > 0)
 				{
+					gameMap.PaintCube(player.position_m, player.position_n);
 					player.position_n -= 1;
 				}
 			}

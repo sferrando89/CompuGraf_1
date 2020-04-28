@@ -7,14 +7,23 @@
 class InputHandler
 {
 	private:
+		static InputHandler* instance;
+		InputHandler();
 		SDL_Event event;
 		GameManager* gameManager;
 		Camera* camera;
 		// Variables para el control del mouse
-		bool mousePressed = false;
 		int previous_x, previous_y;
+
 	public:
-		InputHandler();
+		static InputHandler* GetInstance();
+
+		//Para el control del mouse
+		bool mousePressed = false;
+		int dir_t, dir_p;
+
+		bool settingsOn = false;
+		
 		bool Handle();
 };
 
