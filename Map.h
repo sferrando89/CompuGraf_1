@@ -17,7 +17,7 @@ public:
 	Map(int m, int n, vector<vector<int>> init);
 	int GetCubeHeight(int i, int j);
 
-	void PaintCube(int i, int j);
+	bool PaintCube(int i, int j);
 
 	bool AllCubesPainted();
 
