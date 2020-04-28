@@ -2,6 +2,11 @@
 
 GameManager* GameManager::instance = NULL;
 
+template<typename T>
+std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
+{
+	return stream << static_cast<typename std::underlying_type<T>::type>(e);
+}
 
 GameManager* GameManager::GetInstance() {
 	if (!instance) {
@@ -15,18 +20,81 @@ GameManager::GameManager()
 {
 	//HARDCODEADO EL MAPA PRINCIPAL
 	gameMap = Map(4, 4, { {1,2,3,4},
-						  {1,2,3,4},
-		                  {1,2,3,4},
-		                  {1,2,3,4} });
+						  {0,1,2,2},
+		                  {1,7,3,4},
+		                  {1,2,1,5} });
 
-	Player player(0,0,0,Direction_x::left, Direction_y::down);
+	//Player player(0,0,0,Direction_x::left, Direction_y::down);
+
+	this->player = Player(0, 0, 0, Direction::right);
+	//Player player(0, 0, 0, Direction::right);
+
+	cout << player.position_m << "\n";
 	cout << player.position_n << "\n";
+	cout << player.direction << "\n";
+	cout << "----------------" << "\n";
 
 	gameMap.PrintWithCharacter(0,0);
 }
 
 void GameManager::HandleMovement(SDL_Keycode key) {
 	/* Check the SDLKey values and move change the coords */
+	switch (key) 
+	{
+		case SDLK_w:
+			if (player.direction == Direction::up) 
+			{
+				if (player.position_n < gameMap.size_n -1) 
+				{
+					player.position_n += 1;
+				}
+			}
+			else
+			{
+				player.direction = Direction::up;
+			}
+			break;
+		case SDLK_a:
+			if (player.direction == Direction::left) 
+			{
+				if (player.position_m > 0)
+				{
+					player.position_m -= 1;
+				}
+			}
+			else
+			{
+				player.direction = Direction::left;
+			}
+			break;
+		case SDLK_d:
+			if (player.direction == Direction::right) 
+			{
+				if (player.position_m < gameMap.size_m -1) 
+				{
+					player.position_m += 1;
+				}
+			}
+			else
+			{
+				player.direction = Direction::right;
+			}
+			break;
+		case SDLK_s:
+			if (player.direction == Direction::down)
+			{
+				if (player.position_n > 0)
+				{
+					player.position_n -= 1;
+				}
+			}
+			else
+			{
+				player.direction = Direction::down;
+			}
+			break;
+	}
+	/*
 	switch (key) {
 		case SDLK_LEFT:
 			player.direction_x = Direction_x::left;
@@ -81,7 +149,7 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 	}
 
 	gameMap.PrintWithCharacter(player.position_m, player.position_n);
-
+	*/
 }
 
 bool GameManager::CheckWinCondition()

@@ -1,5 +1,7 @@
 #include "InputHandler.h"
 
+
+
 InputHandler::InputHandler()
 {
 	//GameManager* gameManager = GameManager::GetInstance();
@@ -7,6 +9,7 @@ InputHandler::InputHandler()
 }
 
 bool InputHandler::Handle() {
+
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
@@ -19,7 +22,7 @@ bool InputHandler::Handle() {
 			if (event.key.keysym.sym == SDLK_q) {
 				return true;
 			}
-
+			
 			GameManager::GetInstance()->HandleMovement(event.key.keysym.sym);
 			
 		}

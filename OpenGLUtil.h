@@ -50,3 +50,10 @@ Side Effects:
  -Clears the color buffer
  -Swaps the front/back buffer
 */
+
+
+void renderMap();
+
+void renderPlayer();
+
+void renderEnemy();

@@ -79,3 +79,8 @@ void Map :: PrintWithCharacter(int i, int j)
 
 	cout << "------------------------------------------------------\n";
 }
+
+bool Map::isCubePainted(int i, int j)
+{
+	return matrix[i][j].painted;
+}
