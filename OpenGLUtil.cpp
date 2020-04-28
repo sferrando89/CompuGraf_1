@@ -237,7 +237,7 @@ void renderPlayer()
 		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
 		glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
 
-		if (player.direction == Direction::down)
+		if (player.direction == Direction::up)
 			glColor3f(0, 1, 0);
 
 		//FRONT
@@ -271,7 +271,7 @@ void renderPlayer()
 
 		glColor3f(1, 1, 1);
 
-		if (player.direction == Direction::up)
+		if (player.direction == Direction::down)
 			glColor3f(0, 1, 0);
 			
 		//BACK
