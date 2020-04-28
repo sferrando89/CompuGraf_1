@@ -24,5 +24,7 @@ public:
 	void Print();
 	void PrintWithCharacter(int i, int j);
 
+	bool isCubePainted(int i, int j);
+
 };
 

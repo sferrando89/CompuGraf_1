@@ -1,6 +1,7 @@
 #include "OpenGLUtil.h"
 #include "GameManager.h"
 
+
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
 
@@ -12,11 +13,18 @@ SDL_GLContext gContext;
 
 bool firstdraw = false;
 
-Player player = GameManager::GetInstance()->getPlayer();
 Map map = GameManager::GetInstance()->getGameMap();
+
+template<typename T>
+std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
+{
+	return stream << static_cast<typename std::underlying_type<T>::type>(e);
+}
 
 bool initGL() {
 	//Initialize Projection Matrix
+
+	Player player = GameManager::GetInstance()->getPlayer();
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -95,53 +103,243 @@ void update()
 
 }
 
-void render()
+void renderMap()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
 	for (int i = 0; i < map.size_m; i++) 
 	{
 		for (int j = 0; j < map.size_n; j++) 
 		{
 			if (map.GetCubeHeight(j, i) != 0)
 			{
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 				glBegin(GL_QUADS);
-				glColor3f(0, 0, 1); // AZUL
-				glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
-				glVertex3f(j, i, map.GetCubeHeight(j, i));
-				glColor3f(0, 1, 0); //VERDE
-				glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
-				glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
-				glColor3f(0, 1, 1); //CELESTE
-				glVertex3f(j, i, map.GetCubeHeight(j, i));
-				glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
-				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
-				glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
-				glColor3f(1, 0, 0); //ROJO
-				glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
-				glColor3f(1, 0, 1); //VIOLETA
-				glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
-				glVertex3f(j, i, map.GetCubeHeight(j, i));
-				glColor3f(1, 1, 0); //MARRON
-				glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
-				glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
-				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
-				glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+					glColor3f(1, 0, 0); // AZUL
+					//FRONT
+					glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+					glVertex3f(j, i, map.GetCubeHeight(j, i));
+
+					//RIGHT
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+
+					if (map.isCubePainted(j,i))
+						glColor3f(0, 0, 1);
+					else
+						glColor3f(0, 1, 1);
+					
+					//UP
+					glVertex3f(j, i, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+					
+					//DOWN
+					glColor3f(0, 1, 0); 
+					glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+					
+					glColor3f(1, 0, 0); 
+					
+					//LEFT
+					glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i, map.GetCubeHeight(j, i));
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+					
+					//BACK
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+
+				glEnd();
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+				glBegin(GL_QUADS);
+					
+					glColor3f(0, 0, 0);
+					
+					//FRONT
+					glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+					glVertex3f(j, i, map.GetCubeHeight(j, i));
+
+					//RIGHT
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+
+					//UP
+					glVertex3f(j, i, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+
+					//DOWN
+					glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map.GetCubeHeight(j, i) - 1);
+
+					//LEFT
+					glVertex3f(j, i, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i, map.GetCubeHeight(j, i));
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+
+					//BACK
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+					glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) - 1);
+
 				glEnd();
 			}			
 			
 		}
 	}
+
+}
+
+
+void renderPlayer()
+{
+	Player player = GameManager::GetInstance()->getPlayer();
+
+	cout << player.position_m << "\n";
+	cout << player.position_n << "\n";
+	cout << player.direction << "\n";
+	cout << "----------------" << "\n";
+
+	int j = player.position_m;
+	int i = player.position_n;
+	
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBegin(GL_QUADS);
+		glColor3f(1, 1, 1);
+
+		//UP
+		glVertex3f(j, i, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i) + 1);
+
+		//DOWN
+		glVertex3f(j, i, map.GetCubeHeight(j, i));
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+
+		if (player.direction == Direction::up)
+			glColor3f(0, 1, 0);
+
+		//FRONT
+		glVertex3f(j, i, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j, i, map.GetCubeHeight(j, i) + 1);
+
+		glColor3f(1, 1, 1);
+
+		if (player.direction == Direction::right)
+			glColor3f(0, 1, 0);
+			
+		
+		//LEFT
+		glVertex3f(j, i, map.GetCubeHeight(j, i));
+		glVertex3f(j, i, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+
+		glColor3f(1, 1, 1);
+
+		if (player.direction == Direction::left)
+			glColor3f(0, 1, 0);
+		
+		//RIGHT
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i) + 1);
+
+		glColor3f(1, 1, 1);
+
+		if (player.direction == Direction::down)
+			glColor3f(0, 1, 0);
+			
+		//BACK
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+
+	glEnd();
+
+	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+	glBegin(GL_QUADS);
+
+		glColor3f(0, 0, 0);
+
+		//UP
+		glVertex3f(j, i, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i) + 1);
+
+		//DOWN
+		glVertex3f(j, i, map.GetCubeHeight(j, i));
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+
+		//FRONT
+		glVertex3f(j, i, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j, i, map.GetCubeHeight(j, i) + 1);
+
+		//LEFT
+		glVertex3f(j, i, map.GetCubeHeight(j, i));
+		glVertex3f(j, i, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+
+		//RIGHT
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i, map.GetCubeHeight(j, i) + 1);
+
+		//BACK
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i));
+		glVertex3f(j, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i) + 1);
+		glVertex3f(j + 1, i + 1, map.GetCubeHeight(j, i));
+
+	glEnd();
+}
+
+void renderEnemy()
+{
+}
+
+
+void render()
+{
+	//Clean Buffers
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	renderMap();
+	renderPlayer();
+	renderEnemy();
+
 	//Update screen
 	SDL_GL_SwapWindow(gWindow);
-
 }

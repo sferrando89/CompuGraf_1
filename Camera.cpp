@@ -35,7 +35,7 @@ void Camera::Rotate(float dir_x, float dir_y)
 {
 	Player player = GameManager::GetInstance()->getPlayer();
 
-	//theeta += dir_x * delta;
+	theeta += dir_x * delta;
 	phi += dir_y * delta;
 	
 	float z_up = 1;
