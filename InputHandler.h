@@ -24,6 +24,6 @@ class InputHandler
 
 		bool settingsOn = false;
 		
-		bool Handle();
+		void Handle(bool &quit,bool &pause);
 };
 

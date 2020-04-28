@@ -14,27 +14,30 @@ InputHandler::InputHandler()
 
 }
 
-bool InputHandler::Handle() {
+void InputHandler::Handle(bool &quit, bool &pause) {
 
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
 		{
-			return true;
+			quit = true;
 		}
 
 		if (event.type == SDL_KEYDOWN)
 		{
 
 			if (event.key.keysym.sym == SDLK_q) {
-				return true;
+				quit = true;
+			}
+			else if (event.key.keysym.sym == SDLK_p) {
+				pause = !pause;
 			}
 			else if (event.key.keysym.sym == SDLK_c)
 			{
 				settingsOn = !settingsOn;
 			}
-			
-			GameManager::GetInstance()->HandleMovement(event.key.keysym.sym);
+			if (!pause)
+				GameManager::GetInstance()->HandleMovement(event.key.keysym.sym);
 			
 		}
 		if (event.type == SDL_KEYUP)
@@ -84,7 +87,5 @@ bool InputHandler::Handle() {
 			previous_x = x;
 			previous_y = y;
 		}
-
-		return false;
 	}
 }

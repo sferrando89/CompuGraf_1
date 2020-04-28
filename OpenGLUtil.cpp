@@ -131,6 +131,8 @@ void updateCamera3d()
 
 void renderMap()
 {
+	map = GameManager::GetInstance()->getGameMap();
+
 	for (int i = 0; i < map.size_m; i++) 
 	{
 		for (int j = 0; j < map.size_n; j++) 
