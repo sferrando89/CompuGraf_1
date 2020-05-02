@@ -24,6 +24,7 @@ int main(int argc[], char* args[]) {
 
 	atexit(SDL_Quit);
 
+    /*
     //Do post window/context creation initialization
     if (!initGL())
     {
@@ -31,6 +32,7 @@ int main(int argc[], char* args[]) {
         return 1;
     }
 	
+    */
 	//bandera que controla el loop principal
     bool quit = false;
 

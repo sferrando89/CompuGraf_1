@@ -12,7 +12,11 @@ SDL_Surface* gScreenSurface = NULL;
 //OpenGL context
 SDL_GLContext gContext;
 
+// Text related
 TTF_Font* font;
+SDL_Surface* sFont;
+GLuint textTexture;
+
 
 bool firstdraw = false;
 
@@ -24,6 +28,86 @@ std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::os
 	return stream << static_cast<typename std::underlying_type<T>::type>(e);
 }
 
+bool initTextTexture() {
+
+	//Initialize font library and font texture
+	if (TTF_Init() == -1) {
+		printf("TTF_Init: %s\n", TTF_GetError());
+		return false;
+	}
+	font = TTF_OpenFont("fonts/pixeldroidBoticRegular.ttf", 40);
+	std::cout << TTF_GetError() << std::endl;
+
+	SDL_Color color = { 255, 0, 0};
+	sFont = TTF_RenderText_Solid(font, "Q*ALBER7_", color);
+	//SDL_SaveBMP(sFont, "blended.png");
+
+	SDL_Surface* intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	SDL_BlitSurface(sFont, 0, intermediary, 0);
+	// Genero la textura para el texto
+	glGenTextures(1, &textTexture);
+
+	// Set the texture's stretching properties
+
+
+
+	// Bindeo la textura para poder usarla en el draw
+	// "Paso" la surface con la textura de texto a la de opengl
+	GLint  nbOfColors;
+	GLenum texture_format = 0;
+	nbOfColors = sFont->format->BytesPerPixel;
+
+	switch (nbOfColors) {
+	case 1:
+		texture_format = GL_ALPHA;
+		break;
+	case 3:     // no alpha channel
+		if (sFont->format->Rmask == 0x000000ff)
+			texture_format = GL_RGB;
+		else
+			texture_format = GL_BGR;
+		break;
+	case 4:     // contains an alpha channel
+		if (sFont->format->Rmask == 0x000000ff)
+			texture_format = GL_RGBA;
+		else
+			texture_format = GL_BGRA;
+		break;
+	default:
+		cout << "Warning: the image is not truecolor...";
+		break;
+	}
+
+	glBindTexture(GL_TEXTURE_2D, textTexture);
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		printf("Error en el bindtexture dentro del render del texto\n");
+		printf((const char*)error);
+		return false;
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+			GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+
+	error = glGetError();
+	if (error != GL_NO_ERROR) {
+		// ESTO DE ACA ABAJO ME ROMPIA EL NSIGHT ANDA A SABER POR QUE
+		//printf("Error en el TexImage dentro del initTextTexture \n");
+		//printf((const char*)error);
+		//return false;
+	}
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	// "Desbindeo" 
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	
+	return true;
+}
+
 bool initGL() {
 	//Initialize Projection Matrix
 
@@ -32,18 +116,18 @@ bool initGL() {
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 
-	gluPerspective(800, SCREEN_WIDTH / SCREEN_HEIGHT, 0.8, 100);
+	gluPerspective(800, SCREEN_WIDTH / SCREEN_HEIGHT, 0.8, 100); // Es necesario hacer esto?
 
 	//Initialize Modelview Matrix
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
 	//Initialize Clear Color
-	glClearColor(0.f, 0.f, 0.f, 1.f);
+	glClearColor(0.f, 0.f, 0.f, 0.f);
 
 	glEnable(GL_DEPTH_TEST);
 
-	glLoadIdentity();
+	//glLoadIdentity();
 	gluLookAt(S_RADIO, 0, 0, player.position_m, player.position_n, player.position_o, 0, 0, 1);
 
 	//Check For Error
@@ -52,6 +136,10 @@ bool initGL() {
 		printf("Error initializing OpenGL! %s\n");
 		return false;
 	}
+
+
+	
+
 	return true;
 }
 
@@ -98,13 +186,11 @@ bool initSDL()
 		return(false);
 	}
 
-	//Initialize font library
-	if (TTF_Init() == -1) {
-		printf("TTF_Init: %s\n", TTF_GetError());
-		return false;
+	if (!initTextTexture())
+	{
+		printf("Unable to initialize TextTexture!\n");
+		return(false);
 	}
-	font = TTF_OpenFont("fonts/pixeldroidBoticRegular.ttf", 16);
-	std::cout << TTF_GetError() << std::endl;
 
 	return true;
 }
@@ -355,61 +441,61 @@ void renderEnemy()
 {
 }
 
-void renderText()
+int next_pow2(int num) {
+	int p2 = 1;
+	while (p2 < num) p2 <<= 1;
+	return p2;
+}
+
+void renderTextTexture(GLuint texture)
 {
-
-	glEnable(GL_TEXTURE_2D);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	GLuint texture;
-	glGenTextures(1, &texture);
-	glBindTexture(GL_TEXTURE_2D, texture);
-
-	SDL_Color color = { 255, 0, 0};
-
-	SDL_Surface* sFont = TTF_RenderText_Blended(font, "holaaaaaa", color);
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, sFont->w, sFont->h, 0, GL_BGRA, GL_UNSIGNED_BYTE, sFont->pixels);
-
 	int x = 0;
 	int y = 0;
+	int z = 0;
 
+	glEnable(GL_BLEND);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+	glDisable(GL_DEPTH_TEST);
+
+	glBindTexture(GL_TEXTURE_2D, texture);
+	glEnable(GL_TEXTURE_2D);
+	z = 0;
+
+	glColor3f(1.0f, 1.0f, 1.0f);
 	glBegin(GL_QUADS);
-	
-		glTexCoord2f(0, 0); glVertex2f(0.0, 0.0);
-		glTexCoord2f(1, 0); glVertex2f(100.0, 0.0);
-		glTexCoord2f(1, 1); glVertex2f(100.0, 50.0);
-		glTexCoord2f(0, 1); glVertex2f(0.0, 50.0);
-	
+		glTexCoord2f(0, 0); glVertex3f(0, 0, z);
+		glTexCoord2f(1, 0); glVertex3f(100, 0, z);
+		glTexCoord2f(1, 1); glVertex3f(100, 50, z);
+		glTexCoord2f(0, 1); glVertex3f(0, 50, z);
 	glEnd();
 
-	glBegin(GL_QUADS);
-	glColor3f(1.0f, 0.0f, 0.0);
-	glVertex2f(0.0, 0.0);
-	glVertex2f(100.0, 0.0);
-	glVertex2f(100.0, 50.0);
-	glVertex2f(0.0, 50.0);
-	glEnd();
+	// "Desbindeo"
+	glBindTexture(GL_TEXTURE_2D, NULL);
 
 	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
-
+	glEnable(GL_DEPTH_TEST);
 
 }
 
 void renderHud()
 {
-	
-	glBegin(GL_QUADS);
+
+	float z = 0.5;
+
 	glColor3f(1.0f, 0.0f, 0.0);
-	glVertex2f(0.0, 0.0);
-	glVertex2f(100.0, 0.0);
-	glVertex2f(100.0, 50.0);
-	glVertex2f(0.0, 50.0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	glBegin(GL_QUADS);
+	
+	glVertex3f(10.0, 10.0,z);
+	glVertex3f(10.0, 100.0,z);
+	glVertex3f(100.0, 100.0,z);
+	glVertex3f(100.0, 10.0,z);
+	
+	
 	glEnd();
+
 
 }
 
@@ -445,12 +531,13 @@ void render()
 
 	if (InputHandler::GetInstance()->settingsOn)
 	{
-		renderText();
+		renderTextTexture(textTexture);
 	}
 	else
 	{
 		renderHud();
 	}
+
 
 	glEnable(GL_DEPTH_TEST);
 	//Update screen
