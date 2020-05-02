@@ -87,3 +87,10 @@ bool Map::isCubePainted(int i, int j)
 {
 	return matrix[i][j].painted;
 }
+
+bool Map::validMovement(int old_x, int old_y, int x, int y) {
+	if (abs(matrix[old_x][old_y].h- matrix[x][y].h)>=2 || matrix[x][y].h == 0) {
+		return false;
+	}
+	return true;
+}

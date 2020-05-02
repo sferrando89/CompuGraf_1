@@ -35,19 +35,21 @@ int main(int argc[], char* args[]) {
     */
 	//bandera que controla el loop principal
     bool quit = false;
-
+    
     while (!quit)
     {
 
 		quit = inputHandler->Handle();
 
+        /*cout << gameManager->elapsedTIme();
+        cout << "\n";*/
 		if (gameManager->CheckWinCondition() ){
 			// Gano
 			cout << "Partida ganada!";
 		}
 
 		//Render quad
-		render();
+        render();
 		
     }
 

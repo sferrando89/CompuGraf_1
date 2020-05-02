@@ -127,8 +127,8 @@ bool initGL() {
 
 	glEnable(GL_DEPTH_TEST);
 
-	//glLoadIdentity();
-	gluLookAt(S_RADIO, 0, 0, player.position_m, player.position_n, player.position_o, 0, 0, 1);
+	glLoadIdentity();
+	gluLookAt(S_RADIO, 0, 0, player.position_x, player.position_y, player.position_z, 0, 0, 1);
 
 	//Check For Error
 	GLenum error = glGetError();
@@ -217,6 +217,8 @@ void updateCamera3d()
 
 void renderMap()
 {
+	map = GameManager::GetInstance()->getGameMap();
+
 	for (int i = 0; i < map.size_m; i++) 
 	{
 		for (int j = 0; j < map.size_n; j++) 
@@ -329,8 +331,8 @@ void renderPlayer()
 	//cout << player.direction << "\n";
 	//cout << "----------------" << "\n";
 
-	int j = player.position_m;
-	int i = player.position_n;
+	int j = player.position_x;
+	int i = player.position_y;
 	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBegin(GL_QUADS);

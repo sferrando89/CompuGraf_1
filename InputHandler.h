@@ -3,6 +3,7 @@
 #include <SDL_opengl.h>
 #include "GameManager.h"
 #include "Camera.h"
+#include "LTimer.h"
 
 class InputHandler
 {

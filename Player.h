@@ -9,9 +9,9 @@ class Player
 {
 	public:
 		
-		int position_m;
-		int position_n;
-		int position_o;
+		int position_x;
+		int position_y;
+		int position_z;
 
 		Direction direction;
 		/*

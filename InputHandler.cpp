@@ -25,17 +25,24 @@ bool InputHandler::Handle() {
 
 		if (event.type == SDL_KEYDOWN)
 		{
-
+			GameManager* gamemanager = GameManager::GetInstance();
 			if (event.key.keysym.sym == SDLK_q) {
 				return true;
 			}
+
 			else if (event.key.keysym.sym == SDLK_l)
+
 			{
 				settingsOn = !settingsOn;
 			}
-			
-			GameManager::GetInstance()->HandleMovement(event.key.keysym.sym);
-			
+			else if (event.key.keysym.sym == SDLK_p)
+			{
+				gamemanager->switchTimer();
+			}
+			cout << gamemanager->isPaused();
+			if (!gamemanager->isPaused()) {
+				gamemanager->HandleMovement(event.key.keysym.sym);
+			}	
 		}
 		if (event.type == SDL_KEYUP)
 		{

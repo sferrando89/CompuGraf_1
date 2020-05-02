@@ -26,5 +26,7 @@ public:
 
 	bool isCubePainted(int i, int j);
 
+	bool validMovement(int old_x, int old_y,int x,int y);
+
 };
 

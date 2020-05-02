@@ -15,16 +15,21 @@ GameManager* GameManager::GetInstance() {
 		instance = new GameManager;
 	}
 	return instance;
-
 }
 
 GameManager::GameManager()
 {
 	//HARDCODEADO EL MAPA PRINCIPAL
-	gameMap = Map(4, 4, { {1,2,3,4},
-						  {0,1,2,2},
-		                  {1,7,3,4},
-		                  {1,2,1,5} });
+	gameMap = Map(6, 6, {	//eje y 
+				   /*(0,0)*/{6,5,4,3,2,1}, // e
+							{5,4,3,2,1,0}, // j
+							{4,3,2,1,0,0}, // e
+							{3,2,1,0,0,0}, //
+							{2,1,0,0,0,0}, // x
+							{6,0,0,0,0,0},
+
+		});
+
 
 	//Player player(0,0,0,Direction_x::left, Direction_y::down);
 
@@ -35,7 +40,7 @@ GameManager::GameManager()
 	//cout << player.position_n << "\n";
 	//cout << player.direction << "\n";
 	//cout << "----------------" << "\n";
-
+	
 	gameMap.PrintWithCharacter(0,0);
 }
 
@@ -44,122 +49,76 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 	switch (key) 
 	{
 		case SDLK_w:
-			if (player.direction == Direction::up) 
+
+			player.direction = Direction::up;
+
+			if (player.position_y < gameMap.size_n -1) 
 			{
-				if (player.position_n < gameMap.size_n -1) 
-				{
-					gameMap.PaintCube(player.position_m, player.position_n);
-					player.position_n += 1;
+				int new_x = player.position_x;
+				int new_y = player.position_y+1;
+				if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
+					player.position_x = new_x;
+					player.position_y = new_y;
+					gameMap.PaintCube(player.position_x, player.position_y);
 				}
 			}
-			else
-			{
-				player.direction = Direction::up;
-			}
+			
 			break;
+
 		case SDLK_a:
-			if (player.direction == Direction::left) 
+
+			player.direction = Direction::left;
+			
+			if (player.position_x > 0)
 			{
-				if (player.position_m > 0)
-				{
-					gameMap.PaintCube(player.position_m, player.position_n);
-					player.position_m -= 1;
+				int new_x = player.position_x - 1;
+				int new_y = player.position_y;
+				if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
+					player.position_x = new_x;
+					player.position_y = new_y;
+					gameMap.PaintCube(player.position_x, player.position_y);
 				}
 			}
-			else
-			{
-				player.direction = Direction::left;
-			}
+			
 			break;
+
 		case SDLK_d:
-			if (player.direction == Direction::right) 
+
+			player.direction = Direction::right;
+			
+			if (player.position_x < gameMap.size_m -1) 
 			{
-				if (player.position_m < gameMap.size_m -1) 
-				{
-					gameMap.PaintCube(player.position_m, player.position_n);
-					player.position_m += 1;
+				int new_x = player.position_x + 1;
+				int new_y = player.position_y;
+				if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
+					player.position_x = new_x;
+					player.position_y = new_y;
+					gameMap.PaintCube(player.position_x, player.position_y);
 				}
 			}
-			else
-			{
-				player.direction = Direction::right;
-			}
+			
 			break;
+
 		case SDLK_s:
-			if (player.direction == Direction::down)
+
+			player.direction = Direction::down;
+			
+			if (player.position_y > 0)
 			{
-				if (player.position_n > 0)
-				{
-					gameMap.PaintCube(player.position_m, player.position_n);
-					player.position_n -= 1;
+				int new_x = player.position_x;
+				int new_y = player.position_y-1;
+				if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
+					player.position_x = new_x;
+					player.position_y = new_y;
+					gameMap.PaintCube(player.position_x, player.position_y);
 				}
 			}
-			else
-			{
-				player.direction = Direction::down;
-			}
+
 			break;
 	}
-	/*
-	switch (key) {
-		case SDLK_LEFT:
-			player.direction_x = Direction_x::left;
-			break;
-		case SDLK_RIGHT:
-			player.direction_x = Direction_x::right;
-			break;
-		case SDLK_UP:
-			player.direction_y = Direction_y::up;
-			if (player.position_m > 0) //No esta en el borde superior del mapa
-			{ 
-
-				if(player.direction_x == Direction_x::left
-					&& player.position_n > 0 // No esta en el borde izquierdo del mapa
-					&& gameMap.GetCubeHeight(player.position_m - 1, player.position_n - 1) > 0) // Hay un bloque en la direccion a saltar
-				{
-					if (gameMap.PaintCube(player.position_m, player.position_n)) {
-						points++;
-					}; // Pinto el bloque actual y gano puntos
-					player.position_m = player.position_m - 1; // Muevo el personaje
-					player.position_n = player.position_n - 1;
-				}
-				else if (player.direction_x == Direction_x::right
-					&& player.position_n < gameMap.size_n - 1 // No esta en el borde derecho del mapa
-					&& gameMap.GetCubeHeight(player.position_m - 1, player.position_n) > 0) // Hay un bloque en la direccion a saltar
-				{	
-					if (gameMap.PaintCube(player.position_m, player.position_n)) {
-						points++;
-					}; // Pinto el bloque actual y gano puntos
-					player.position_m = player.position_m - 1; // Muevo el personaje
-				}
-			}
-			break;
-		case SDLK_DOWN:
-			player.direction_y = Direction_y::down;
-			if (player.position_m < gameMap.size_n - 1) //No esta en el borde inferior del mapa
-			{
-				
-				if (player.direction_x == Direction_x::left
-					//&& player.position_n > 0 // No esta en el borde izquierdo del mapa
-					&& gameMap.GetCubeHeight(player.position_m + 1, player.position_n) > 0) // Hay un bloque en la direccion a saltar
-				{
-					gameMap.PaintCube(player.position_m, player.position_n); // Pinto el bloque actual
-					player.position_m = player.position_m + 1; // Muevo el personaje
-				}
-				else if (player.direction_x == Direction_x::right
-					&& player.position_n < gameMap.size_n - 1 // No esta en el borde derecho del mapa
-					&& gameMap.GetCubeHeight(player.position_m + 1, player.position_n + 1) > 0) // Hay un bloque en la direccion a saltar
-				{
-					gameMap.PaintCube(player.position_m, player.position_n); //Pinto el bloque actual
-					player.position_m = player.position_m + 1; // Muevo el personaje
-					player.position_n = player.position_n + 1; 
-				}
-			}
-			break;
-	}
-
-	gameMap.PrintWithCharacter(player.position_m, player.position_n);
-	*/
+	
+	//gameMap.PrintWithCharacter(player.position_m, player.position_n);
+	
 }
 
 bool GameManager::CheckWinCondition()
@@ -175,4 +134,23 @@ Map GameManager::getGameMap()
 Player GameManager::getPlayer()
 {
 	return this->player;
+}
+
+void GameManager::switchTimer(){
+	if (timer.isStarted())
+	{
+		timer.stop();
+	}
+	else
+	{
+		timer.start();
+	}
+}
+
+bool GameManager::isPaused() {
+	return !timer.isStarted();
+}
+
+Uint32 GameManager::elapsedTIme() {
+	return timer.getTicks();
 }

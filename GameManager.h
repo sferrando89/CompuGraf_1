@@ -3,6 +3,7 @@
 #include <SDL_opengl.h>
 #include "Map.h"
 #include "Player.h"
+#include "LTimer.h"
 
 // GameManager es singleton
 
@@ -14,10 +15,14 @@ class GameManager
         GameManager();
 		Map gameMap;
 		Player player;
+        LTimer timer;
     public:
         static GameManager* GetInstance();
 		void HandleMovement(SDL_Keycode key);
 		bool CheckWinCondition();
         Map getGameMap();
         Player getPlayer();
+        void switchTimer();
+        bool isPaused();
+        Uint32 elapsedTIme();
 };
