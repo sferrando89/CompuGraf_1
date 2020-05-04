@@ -42,5 +42,8 @@ public:
 
     Vector3 simetric(Vector3 w);
     //devuelve un vector que es el simetrico segun el vector w
+
+    Vector3 crossProduct(Vector3 w);
+    // devuelve el producto vectorial con el vector w
 };
 

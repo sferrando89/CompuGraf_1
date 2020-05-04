@@ -55,9 +55,11 @@ Side Effects:
 void updateCamera3d();
 void updateCamera2d();
 
-void renderText();
+void renderTextTexture(GLuint texture, int x, int y);
 
 void renderHud();
+
+void renderSettings();
 
 void renderMap();
 

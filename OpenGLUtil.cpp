@@ -1,6 +1,7 @@
 #include "OpenGLUtil.h"
 #include "GameManager.h"
 #include "InputHandler.h"
+#include "Settings.h"
 
 
 //The window we'll be rendering to
@@ -16,6 +17,7 @@ SDL_GLContext gContext;
 TTF_Font* font;
 SDL_Surface* sFont;
 GLuint textTexture;
+GLuint *settingsTextTexturesFixed;
 
 
 bool firstdraw = false;
@@ -38,47 +40,21 @@ bool initTextTexture() {
 	font = TTF_OpenFont("fonts/pixeldroidBoticRegular.ttf", 40);
 	std::cout << TTF_GetError() << std::endl;
 
-	SDL_Color color = { 255, 0, 0};
+	SDL_Color color;
+	SDL_Surface* intermediary;
+
+	color = { 255, 0, 0};
 	sFont = TTF_RenderText_Solid(font, "Q*ALBER7_", color);
 	//SDL_SaveBMP(sFont, "blended.png");
 
-	SDL_Surface* intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+	intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 
 	SDL_BlitSurface(sFont, 0, intermediary, 0);
-	// Genero la textura para el texto
+
 	glGenTextures(1, &textTexture);
-
-	// Set the texture's stretching properties
-
-
 
 	// Bindeo la textura para poder usarla en el draw
 	// "Paso" la surface con la textura de texto a la de opengl
-	GLint  nbOfColors;
-	GLenum texture_format = 0;
-	nbOfColors = sFont->format->BytesPerPixel;
-
-	switch (nbOfColors) {
-	case 1:
-		texture_format = GL_ALPHA;
-		break;
-	case 3:     // no alpha channel
-		if (sFont->format->Rmask == 0x000000ff)
-			texture_format = GL_RGB;
-		else
-			texture_format = GL_BGR;
-		break;
-	case 4:     // contains an alpha channel
-		if (sFont->format->Rmask == 0x000000ff)
-			texture_format = GL_RGBA;
-		else
-			texture_format = GL_BGRA;
-		break;
-	default:
-		cout << "Warning: the image is not truecolor...";
-		break;
-	}
-
 	glBindTexture(GL_TEXTURE_2D, textTexture);
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
@@ -102,8 +78,72 @@ bool initTextTexture() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	// Genero las texturas para los textos fijos
+	// Las texturas que se guardan en la estructura son:
+	// settingsTextTexturesFixed[0] = Titulo
+	// settingsTextTexturesFixed[1] = "Game speed:" No seleccionado
+	// settingsTextTexturesFixed[2] = "Game speed:" Seleccionado
+	// settingsTextTexturesFixed[3] = "Wireframe: " No seleccionado
+	// settingsTextTexturesFixed[4] = "Wireframe: " Seleccionado
+	// settingsTextTexturesFixed[5] = "Texturas: " No seleccionado
+	// settingsTextTexturesFixed[6] = "Texturas: " Seleccionado
+	// settingsTextTexturesFixed[7] = "Interpolado: " No seleccionado
+	// settingsTextTexturesFixed[8] = "Interpolado: " Seleccionado
+	// settingsTextTexturesFixed[9] = "On" Prendido
+	// settingsTextTexturesFixed[10] = "On" Apagado
+	// settingsTextTexturesFixed[11] = "Off" Prendido
+	// settingsTextTexturesFixed[12] = "Off" Apagado
+	// settingsTextTexturesFixed[13] = "Lento" Prendido
+	// settingsTextTexturesFixed[14] = "Lento" Apagado
+	// settingsTextTexturesFixed[15] = "Rapido" Prendido
+	// settingsTextTexturesFixed[16] = "Rapido" Apagado
+
+	int n = 17;
+	settingsTextTexturesFixed = new GLuint[n];
+	glGenTextures(n, settingsTextTexturesFixed);
+
+	struct _text {
+		const char* texto;
+		SDL_Color color;
+	};
+
+	_text* textos = new _text[n];
+	textos[0]	= { "SETTINGS",		{255,0,0} };
+	textos[1]	= { "Game speed:",	{0,0,255} };
+	textos[2]	= { "Game speed:",	{0,255,255} };
+	textos[3]	= { "Wireframe:",	{0,0,255} };
+	textos[4]	= { "Wireframe:",	{0,255,255} };
+	textos[5]	= { "Texturas:",	{0,0,255} };
+	textos[6]	= { "Texturas:",	{0,255,255} };
+	textos[7]	= { "Interpolado:",	{0,0,255} };
+	textos[8]	= { "Interpolado:",	{0,255,255} };
+	textos[9]	= { "ON",			{255, 255,255} };
+	textos[10]	= { "ON",			{125, 125,125} };
+	textos[11]	= { "OFF",			{255, 255,255} };
+	textos[12]	= { "OFF",			{125, 125,125} };
+	textos[13]	= { "Lento",		{255, 255,255} };
+	textos[14]	= { "Lento",		{125, 125,125} };
+	textos[15]	= { "Rapido",		{255, 255,255} };
+	textos[16]	= { "Rapido",		{125, 125,125} };
+
+	for (int i = 0; i < n; i++) 
+	{
+		sFont = TTF_RenderText_Solid(font, textos[i].texto, textos[i].color);
+		intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		SDL_BlitSurface(sFont, 0, intermediary, 0);
+		
+		glBindTexture(GL_TEXTURE_2D, settingsTextTexturesFixed[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+			GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+		
+		glBindTexture(GL_TEXTURE_2D, NULL); // Desbindeo
+	}
+	
 	// "Desbindeo" 
-	glBindTexture(GL_TEXTURE_2D, NULL);
+	//glBindTexture(GL_TEXTURE_2D, NULL);
 	
 	return true;
 }
@@ -142,7 +182,6 @@ bool initGL() {
 
 	return true;
 }
-
 
 bool initSDL()
 {
@@ -443,19 +482,13 @@ void renderEnemy()
 {
 }
 
-int next_pow2(int num) {
-	int p2 = 1;
-	while (p2 < num) p2 <<= 1;
-	return p2;
-}
-
-void renderTextTexture(GLuint texture)
+void renderTextTexture(GLuint texture, int x, int y)
 {
-	int x = 0;
-	int y = 0;
 	int z = 0;
+	int w = 0;
+	int h = 0;
 
-	glEnable(GL_BLEND);
+	//glEnable(GL_BLEND);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glDisable(GL_DEPTH_TEST);
@@ -464,21 +497,23 @@ void renderTextTexture(GLuint texture)
 	glEnable(GL_TEXTURE_2D);
 	z = 0;
 
-	glColor3f(1.0f, 1.0f, 1.0f);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+	glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+
+	glColor3f(1.0, 1.0, 1.0);
 	glBegin(GL_QUADS);
-		glTexCoord2f(0, 0); glVertex3f(0, 0, z);
-		glTexCoord2f(1, 0); glVertex3f(100, 0, z);
-		glTexCoord2f(1, 1); glVertex3f(100, 50, z);
-		glTexCoord2f(0, 1); glVertex3f(0, 50, z);
+		glTexCoord2f(0, 0); glVertex3f(x, y, z);
+		glTexCoord2f(1, 0); glVertex3f(x + w, y, z);
+		glTexCoord2f(1, 1); glVertex3f(x + w, y + h, z);
+		glTexCoord2f(0, 1); glVertex3f(x, y + h, z);
 	glEnd();
 
 	// "Desbindeo"
 	glBindTexture(GL_TEXTURE_2D, NULL);
 
-	glDisable(GL_BLEND);
+	//glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
-
 }
 
 void renderHud()
@@ -499,6 +534,79 @@ void renderHud()
 	glEnd();
 
 
+}
+
+void renderSettings()
+{
+	renderTextTexture(settingsTextTexturesFixed[0], 30, 0);
+	
+	if (Settings::GetInstance()->settingSelected == 1) {
+		renderTextTexture(settingsTextTexturesFixed[2], 30, 30);
+	}
+	else
+	{
+		renderTextTexture(settingsTextTexturesFixed[1], 30, 30);
+	}
+	if (Settings::GetInstance()->varValues[0]) {
+		renderTextTexture(settingsTextTexturesFixed[13], 300, 30);
+		renderTextTexture(settingsTextTexturesFixed[16], 420, 30);
+	}
+	else
+	{
+		renderTextTexture(settingsTextTexturesFixed[14], 300, 30);
+		renderTextTexture(settingsTextTexturesFixed[15], 420, 30);
+	}
+
+	if (Settings::GetInstance()->settingSelected == 2) {
+		renderTextTexture(settingsTextTexturesFixed[4], 30, 70);
+	}
+	else
+	{
+		renderTextTexture(settingsTextTexturesFixed[3], 30, 70);
+	}
+	if (Settings::GetInstance()->varValues[1]) {
+		renderTextTexture(settingsTextTexturesFixed[9], 300, 70);
+		renderTextTexture(settingsTextTexturesFixed[12], 350, 70);
+	}
+	else
+	{
+		renderTextTexture(settingsTextTexturesFixed[10], 300, 70);
+		renderTextTexture(settingsTextTexturesFixed[11], 350, 70);
+	}
+
+	if (Settings::GetInstance()->settingSelected == 3) {
+		renderTextTexture(settingsTextTexturesFixed[6], 30, 110);
+	}
+	else
+	{
+		renderTextTexture(settingsTextTexturesFixed[5], 30, 110);
+	}
+	if (Settings::GetInstance()->varValues[2]) {
+		renderTextTexture(settingsTextTexturesFixed[9], 300, 110);
+		renderTextTexture(settingsTextTexturesFixed[12], 350, 110);
+	}
+	else
+	{
+		renderTextTexture(settingsTextTexturesFixed[10], 300, 110);
+		renderTextTexture(settingsTextTexturesFixed[11], 350, 110);
+	}
+
+	if (Settings::GetInstance()->settingSelected == 4) {
+		renderTextTexture(settingsTextTexturesFixed[8], 30, 150);
+	}
+	else
+	{
+		renderTextTexture(settingsTextTexturesFixed[7], 30, 150);
+	}
+	if (Settings::GetInstance()->varValues[3]) {
+		renderTextTexture(settingsTextTexturesFixed[9], 300, 150);
+		renderTextTexture(settingsTextTexturesFixed[12], 350, 150);
+	}
+	else
+	{
+		renderTextTexture(settingsTextTexturesFixed[10], 300, 150);
+		renderTextTexture(settingsTextTexturesFixed[11], 350, 150);
+	}
 }
 
 void render()
@@ -533,7 +641,7 @@ void render()
 
 	if (InputHandler::GetInstance()->settingsOn)
 	{
-		renderTextTexture(textTexture);
+		renderSettings();
 	}
 	else
 	{

@@ -33,16 +33,22 @@ bool InputHandler::Handle() {
 			else if (event.key.keysym.sym == SDLK_l)
 
 			{
-				settingsOn = !settingsOn;
+				
 			}
 			else if (event.key.keysym.sym == SDLK_p)
 			{
+				Settings::GetInstance()->settingSelected = 1;
+				settingsOn = !settingsOn;
 				gamemanager->switchTimer();
 			}
-			cout << gamemanager->isPaused();
+			//cout << gamemanager->isPaused();
 			if (!gamemanager->isPaused()) {
 				gamemanager->HandleMovement(event.key.keysym.sym);
-			}	
+			}
+			else
+			{
+				Settings::GetInstance()->HandleMovement(event.key.keysym.sym);
+			}
 		}
 		if (event.type == SDL_KEYUP)
 		{

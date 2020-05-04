@@ -4,6 +4,7 @@
 #include "GameManager.h"
 #include "Camera.h"
 #include "LTimer.h"
+#include "Settings.h"
 
 class InputHandler
 {

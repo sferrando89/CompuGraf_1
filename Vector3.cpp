@@ -100,3 +100,10 @@ Vector3 Vector3::simetric(Vector3 w)
 	return res;	
 }
 
+Vector3 Vector3::crossProduct(Vector3 w) {
+	Vector3 res;
+	res.x = this->y * w.z - this->z * w.y;
+	res.y = this->z * w.x - this->x * w.z;
+	res.z = this->x * w.y - this->y * w.x;
+	return res;
+}
