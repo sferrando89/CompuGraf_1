@@ -15,7 +15,8 @@ InputHandler::InputHandler()
 }
 
 bool InputHandler::Handle() {
-
+	GameManager* gamemanager = GameManager::GetInstance();
+	//cout << gamemanager->getPlayTime()<<endl;
 	while (SDL_PollEvent(&event))
 	{
 		if (event.type == SDL_QUIT)
@@ -25,7 +26,7 @@ bool InputHandler::Handle() {
 
 		if (event.type == SDL_KEYDOWN)
 		{
-			GameManager* gamemanager = GameManager::GetInstance();
+			
 			if (event.key.keysym.sym == SDLK_q) {
 				return true;
 			}
@@ -41,7 +42,7 @@ bool InputHandler::Handle() {
 				settingsOn = !settingsOn;
 				gamemanager->switchTimer();
 			}
-			//cout << gamemanager->isPaused();
+
 			if (!gamemanager->isPaused()) {
 				gamemanager->HandleMovement(event.key.keysym.sym);
 			}

@@ -3,7 +3,7 @@
 LTimer::LTimer()
 {
     //Initialize the variables
-    mStartTicks = 0;
+    mStartTicks = SDL_GetTicks();
     mPausedTicks = 0;
 
     mPaused = false;
@@ -85,7 +85,6 @@ Uint32 LTimer::getTicks()
             time = SDL_GetTicks() - mStartTicks;
         }
     }
-
     return time;
 }
 
@@ -102,3 +101,7 @@ bool LTimer::isPaused()
     return mPaused && mStarted;
 }
 
+void LTimer::restart() {
+    stop();
+    start();
+}

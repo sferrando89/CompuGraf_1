@@ -24,5 +24,6 @@ class GameManager
         Player getPlayer();
         void switchTimer();
         bool isPaused();
-        Uint32 elapsedTIme();
+        Uint32 getPlayTime();
+        Uint32 getAvgFrames(int countedFrames);
 };

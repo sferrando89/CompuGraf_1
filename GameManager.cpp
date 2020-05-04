@@ -137,13 +137,13 @@ Player GameManager::getPlayer()
 }
 
 void GameManager::switchTimer(){
-	if (timer.isStarted())
+	if (timer.isPaused())
 	{
-		timer.stop();
+		timer.unpause();
 	}
 	else
 	{
-		timer.start();
+		timer.pause();
 	}
 }
 
@@ -151,6 +151,15 @@ bool GameManager::isPaused() {
 	return !timer.isStarted();
 }
 
-Uint32 GameManager::elapsedTIme() {
+Uint32 GameManager::getPlayTime() {
 	return timer.getTicks();
+}
+
+Uint32 GameManager::getAvgFrames(int countedFrames) {
+	Uint32 avgFPS= countedFrames / (getElapsedTime() / 1000.f);
+	if (avgFPS > 2000000)
+	{
+		avgFPS = 0;
+	}
+	return avgFPS;
 }

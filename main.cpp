@@ -15,6 +15,10 @@ int main(int argc[], char* args[]) {
 
 	InputHandler* inputHandler = InputHandler::GetInstance();
 	GameManager* gameManager = GameManager::GetInstance();
+    int renderedFrames=0;
+    LTimer capTimer;
+    const int SCREEN_FPS = 60;
+    const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
 
     if (!initSDL())
     {
@@ -38,11 +42,10 @@ int main(int argc[], char* args[]) {
     
     while (!quit)
     {
-
+        capTimer.restart();
+        //cout << gameManager->getAvgFrames(renderedFrames) << endl;
 		quit = inputHandler->Handle();
 
-        /*cout << gameManager->elapsedTIme();
-        cout << "\n";*/
 		if (gameManager->CheckWinCondition() ){
 			// Gano
 			cout << "Partida ganada!";
@@ -50,7 +53,14 @@ int main(int argc[], char* args[]) {
 
 		//Render quad
         render();
-		
+        renderedFrames++;
+
+        int frameTicks = capTimer.getTicks();
+        if (frameTicks < SCREEN_TICKS_PER_FRAME)
+        {
+            //Wait remaining time
+            SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
+        }
     }
 
 	return 0;
