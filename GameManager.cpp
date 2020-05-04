@@ -156,7 +156,7 @@ Uint32 GameManager::getPlayTime() {
 }
 
 Uint32 GameManager::getAvgFrames(int countedFrames) {
-	Uint32 avgFPS= countedFrames / (getElapsedTime() / 1000.f);
+	Uint32 avgFPS= countedFrames / (getPlayTime() / 1000.f);
 	if (avgFPS > 2000000)
 	{
 		avgFPS = 0;
