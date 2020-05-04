@@ -26,7 +26,6 @@ bool InputHandler::Handle() {
 
 		if (event.type == SDL_KEYDOWN)
 		{
-			
 			if (event.key.keysym.sym == SDLK_q) {
 				return true;
 			}

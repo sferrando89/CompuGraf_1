@@ -148,7 +148,7 @@ void GameManager::switchTimer(){
 }
 
 bool GameManager::isPaused() {
-	return !timer.isStarted();
+	return timer.isPaused();
 }
 
 Uint32 GameManager::getPlayTime() {
