@@ -21,6 +21,7 @@ GLuint *settingsTextTexturesFixed;
 
 
 bool firstdraw = false;
+int renderedFrames = 0;
 
 Map map = GameManager::GetInstance()->getGameMap();
 
@@ -168,7 +169,7 @@ bool initGL() {
 	glEnable(GL_DEPTH_TEST);
 
 	glLoadIdentity();
-	gluLookAt(S_RADIO, 0, 0, player.position_x, player.position_y, player.position_z, 0, 0, 1);
+	gluLookAt(S_RADIO, 0, 0, player.currentPosition.x, player.currentPosition.y, player.currentPosition.z, 0, 0, 1);
 
 	//Check For Error
 	GLenum error = glGetError();
@@ -369,9 +370,11 @@ void renderPlayer()
 	//cout << player.position_n << "\n";
 	//cout << player.direction << "\n";
 	//cout << "----------------" << "\n";
-
-	int j = player.position_x;
-	int i = player.position_y;
+	if (player.isMoving) {
+		float dist=player.distanceTraveled;
+	}
+	int j = player.currentPosition.x;
+	int i = player.currentPosition.y;
 	
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	glBegin(GL_QUADS);
@@ -609,7 +612,7 @@ void renderSettings()
 	}
 }
 
-void render()
+int render()
 {
 	//Clean Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -648,8 +651,20 @@ void render()
 		renderHud();
 	}
 
-
 	glEnable(GL_DEPTH_TEST);
 	//Update screen
 	SDL_GL_SwapWindow(gWindow);
+
+	renderedFrames++;
+	return renderedFrames;
+}
+
+Uint32 getAvgFrames() {
+	GameManager* gamemanager = GameManager::GetInstance();
+	Uint32 avgFPS = renderedFrames / (gamemanager->getPlayTime() / 1000.f);
+	if (avgFPS > 2000000)
+	{
+		avgFPS = 0;
+	}
+	return avgFPS;
 }

@@ -15,10 +15,11 @@ int main(int argc[], char* args[]) {
 
 	InputHandler* inputHandler = InputHandler::GetInstance();
 	GameManager* gameManager = GameManager::GetInstance();
-    int renderedFrames=0;
+    Settings* settings = Settings::GetInstance();
+
     LTimer capTimer;
-    const int SCREEN_FPS = 60;
-    const int SCREEN_TICKS_PER_FRAME = 1000 / SCREEN_FPS;
+
+    const int SCREEN_TICKS_PER_FRAME = 1000 / settings->SCREEN_FPS;
 
     if (!initSDL())
     {
@@ -39,11 +40,12 @@ int main(int argc[], char* args[]) {
     */
 	//bandera que controla el loop principal
     bool quit = false;
+    bool skipNextFrame = false;
     
     while (!quit)
     {
         capTimer.restart();
-        //cout << gameManager->getAvgFrames(renderedFrames) << endl;
+        //cout << getAvgFrames() << endl;
 		quit = inputHandler->Handle();
 
 		if (gameManager->CheckWinCondition() ){
@@ -52,14 +54,19 @@ int main(int argc[], char* args[]) {
 		}
 
 		//Render quad
-        render();
-        renderedFrames++;
+        if (!skipNextFrame) {
+            render();
+        }
+        skipNextFrame = false;
 
         int frameTicks = capTimer.getTicks();
-        if (frameTicks < SCREEN_TICKS_PER_FRAME)
+        if (frameTicks <= SCREEN_TICKS_PER_FRAME)
         {
             //Wait remaining time
             SDL_Delay(SCREEN_TICKS_PER_FRAME - frameTicks);
+        }
+        else {
+            skipNextFrame = true;
         }
     }
 

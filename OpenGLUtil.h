@@ -40,7 +40,7 @@ Side Effects:
  -None
 */
 
-void render();
+int render();
 /*
 Pre Condition:
  -A valid OpenGL context
@@ -66,3 +66,5 @@ void renderMap();
 void renderPlayer();
 
 void renderEnemy();
+
+Uint32 getAvgFrames();

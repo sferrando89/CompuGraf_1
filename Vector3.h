@@ -2,11 +2,9 @@
 #pragma once
 class Vector3
 {
-private:
-    float x, y, z;
 
 public:
-
+    float x, y, z;
     Vector3();
     Vector3(float _x, float _y, float _z);
 
@@ -14,7 +12,7 @@ public:
     float getY();
     float getZ();
 
-    virtual ~Vector3();
+    ~Vector3();
 
     Vector3 add(Vector3 w); 
     //devuelve un nuevo vector que resulta de sumarle w

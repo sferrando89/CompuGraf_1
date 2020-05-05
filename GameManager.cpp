@@ -33,7 +33,7 @@ GameManager::GameManager()
 
 	//Player player(0,0,0,Direction_x::left, Direction_y::down);
 
-	this->player = Player(0, 0, 0, Direction::right);
+	this->player = Player(Vector3(0, 0, 0), Direction::right);
 	//Player player(0, 0, 0, Direction::right);
 
 	//cout << player.position_m << "\n";
@@ -46,79 +46,78 @@ GameManager::GameManager()
 
 void GameManager::HandleMovement(SDL_Keycode key) {
 	/* Check the SDLKey values and move change the coords */
-	switch (key) 
-	{
+	if (!player.isMoving) {
+		switch (key)
+		{
 		case SDLK_w:
-
 			player.direction = Direction::up;
 
-			if (player.position_y < gameMap.size_n -1) 
+			if (player.currentPosition.y < gameMap.size_n - 1)
 			{
-				int new_x = player.position_x;
-				int new_y = player.position_y+1;
-				if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
-					player.position_x = new_x;
-					player.position_y = new_y;
-					gameMap.PaintCube(player.position_x, player.position_y);
+				int new_x = player.currentPosition.x;
+				int new_y = player.currentPosition.y + 1;
+				if (gameMap.validMovement(player.currentPosition.x, player.currentPosition.y, new_x, new_y)) {
+					//player.isPlayerMoving = true;
+					player.currentPosition = Vector3(new_x, new_y, player.currentPosition.z);
+					gameMap.PaintCube(player.currentPosition.x, player.currentPosition.y);
 				}
 			}
-			
+
 			break;
 
 		case SDLK_a:
 
 			player.direction = Direction::left;
-			
-			if (player.position_x > 0)
+
+			if (player.currentPosition.x > 0)
 			{
-				int new_x = player.position_x - 1;
-				int new_y = player.position_y;
-				if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
-					player.position_x = new_x;
-					player.position_y = new_y;
-					gameMap.PaintCube(player.position_x, player.position_y);
+				int new_x = player.currentPosition.x - 1;
+				int new_y = player.currentPosition.y;
+				if (gameMap.validMovement(player.currentPosition.x, player.currentPosition.y, new_x, new_y)) {
+					//player.isPlayerMoving = true;
+					player.currentPosition = Vector3(new_x, new_y, player.currentPosition.z);
+					gameMap.PaintCube(player.currentPosition.x, player.currentPosition.y);
 				}
 			}
-			
+
 			break;
 
 		case SDLK_d:
 
 			player.direction = Direction::right;
-			
-			if (player.position_x < gameMap.size_m -1) 
+
+			if (player.currentPosition.x < gameMap.size_m - 1)
 			{
-				int new_x = player.position_x + 1;
-				int new_y = player.position_y;
-				if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
-					player.position_x = new_x;
-					player.position_y = new_y;
-					gameMap.PaintCube(player.position_x, player.position_y);
+				int new_x = player.currentPosition.x + 1;
+				int new_y = player.currentPosition.y;
+				if (gameMap.validMovement(player.currentPosition.x, player.currentPosition.y, new_x, new_y)) {
+					//player.isPlayerMoving = true;
+					player.currentPosition = Vector3(new_x, new_y, player.currentPosition.z);
+					gameMap.PaintCube(player.currentPosition.x, player.currentPosition.y);
 				}
 			}
-			
+
 			break;
 
 		case SDLK_s:
 
 			player.direction = Direction::down;
-			
-			if (player.position_y > 0)
+
+			if (player.currentPosition.y > 0)
 			{
-				int new_x = player.position_x;
-				int new_y = player.position_y-1;
-				if (gameMap.validMovement(player.position_x, player.position_y, new_x, new_y)) {
-					player.position_x = new_x;
-					player.position_y = new_y;
-					gameMap.PaintCube(player.position_x, player.position_y);
+				int new_x = player.currentPosition.x;
+				int new_y = player.currentPosition.y - 1;
+				if (gameMap.validMovement(player.currentPosition.x, player.currentPosition.y, new_x, new_y)) {
+					//player.isPlayerMoving = true;
+					player.currentPosition = Vector3(new_x, new_y, player.currentPosition.z);
+					gameMap.PaintCube(player.currentPosition.x, player.currentPosition.y);
 				}
 			}
 
 			break;
+		}
 	}
-	
 	//gameMap.PrintWithCharacter(player.position_m, player.position_n);
-	
 }
 
 bool GameManager::CheckWinCondition()
@@ -153,13 +152,4 @@ bool GameManager::isPaused() {
 
 Uint32 GameManager::getPlayTime() {
 	return timer.getTicks();
-}
-
-Uint32 GameManager::getAvgFrames(int countedFrames) {
-	Uint32 avgFPS= countedFrames / (getPlayTime() / 1000.f);
-	if (avgFPS > 2000000)
-	{
-		avgFPS = 0;
-	}
-	return avgFPS;
 }

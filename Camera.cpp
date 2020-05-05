@@ -74,5 +74,5 @@ void Camera::apply()
 	Player player = GameManager::GetInstance()->getPlayer();
 	glLoadIdentity();
 	float z_up = 1;
-	gluLookAt(x, y, z, player.position_x, player.position_y, player.position_z, 0, 0, z_up);
+	gluLookAt(x, y, z, player.currentPosition.x, player.currentPosition.y, player.currentPosition.z, 0, 0, z_up);
 }
