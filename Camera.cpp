@@ -26,13 +26,18 @@ Camera* Camera::GetInstance(){
 Camera::Camera()
 {
 	theeta = M_PI / 4;
-	phi = M_PI / 4;
+	phi = 0;
 	r = S_RADIO;
 	delta = M_PI / 135;
 
 	x = r * cos(theeta) * sin(phi);
 	y = r * sin(theeta) * sin(phi);
 	z = r * cos(phi);
+
+	Map map = GameManager::GetInstance()->getGameMap();
+
+	direction = Vector3( x - map.center.getX(), y - map.center.getY(), z - map.center.getZ());
+
 }
 
 
