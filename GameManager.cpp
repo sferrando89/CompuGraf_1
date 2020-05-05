@@ -20,20 +20,21 @@ GameManager* GameManager::GetInstance() {
 GameManager::GameManager()
 {
 	//HARDCODEADO EL MAPA PRINCIPAL
-	gameMap = Map(6, 6, {	//eje y 
-				   /*(0,0)*/{6,5,4,3,2,1}, // e
-							{5,4,3,2,1,0}, // j
-							{4,3,2,1,0,0}, // e
-							{3,2,1,0,0,0}, //
-							{2,1,0,0,0,0}, // x
-							{6,0,0,0,0,0},
+	gameMap = Map(7, 7, {	//eje y 
+				   /*(0,0)*/{1,1,1,1,1,1,1}, // e
+							{3,3,3,2,3,3,3}, // j
+							{4,5,6,7,6,5,4}, // e
+							{3,3,3,2,3,3,3}, //
+							{1,1,1,1,1,1,1}, // x
+							{1,0,0,0,0,0,0},
+							{2,3,4,5,6,7,8}
 
 		});
 
 
 	//Player player(0,0,0,Direction_x::left, Direction_y::down);
 
-	this->player = Player(0, 0, 0, Direction::right);
+	this->player = Player(2, 3, 0, Direction::right);
 	//Player player(0, 0, 0, Direction::right);
 
 	//cout << player.position_m << "\n";

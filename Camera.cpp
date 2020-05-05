@@ -25,54 +25,47 @@ Camera* Camera::GetInstance(){
 
 Camera::Camera()
 {
-	theeta = 0;
-	phi = M_PI / 2;
+	theeta = M_PI / 4;
+	phi = M_PI / 4;
 	r = S_RADIO;
-	delta = M_PI / 90;
-	x = S_RADIO;
-	y = 0;
-	z = 0;
+	delta = M_PI / 135;
+
+	x = r * cos(theeta) * sin(phi);
+	y = r * sin(theeta) * sin(phi);
+	z = r * cos(phi);
 }
 
 
 
 void Camera::Rotate(float dir_x, float dir_y)
 {
-	Player player = GameManager::GetInstance()->getPlayer();
 
 	theeta += dir_x * delta;
-	phi += dir_y * delta;
-	
-	float z_up = 1;
+	float phi_n = phi + dir_y * delta;
 
-	if (theeta >= 2 * M_PI)
-		theeta = 0;
-	/*
-	if (phi > M_PI) {
-		phi = 0;
-		//z_up = -1;
-	}
-	*/
+
+	if (phi_n > (3/2) * M_PI)
+		phi = phi;
+
+	else if (phi_n < 0 ) 
+		phi = phi;
 	
+	else
+		phi = phi_n;
+
 	x = r * cos(theeta) * sin(phi);
 	y = r * sin(theeta) * sin(phi);
 	z = r * cos(phi);
 
-	/*
-	if (z < 0) {
-		z_up = -1;
-	}
-	*/
+	cout << r << " - " << phi << " - " << x << ", " << y << ", " << z << ", " <<  "\n";
 
-	//glLoadIdentity();
-	//gluLookAt(x, y, z, player.position_m, player.position_n, player.position_o, 0, 0, z_up);
-	
 }
 
 void Camera::apply()
 {
 	Player player = GameManager::GetInstance()->getPlayer();
 	glLoadIdentity();
-	float z_up = 1;
-	gluLookAt(x, y, z, player.position_x, player.position_y, player.position_z, 0, 0, z_up);
+	
+	gluLookAt(x, y, z, player.position_x, player.position_y, player.position_z, 0, 0, 1);
+
 }
