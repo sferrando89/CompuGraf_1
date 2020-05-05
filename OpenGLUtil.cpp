@@ -169,7 +169,7 @@ bool initGL() {
 	glEnable(GL_DEPTH_TEST);
 
 	glLoadIdentity();
-	gluLookAt(S_RADIO, 0, 0, player->currentPosition.x, player->currentPosition.y, player->currentPosition.z, 0, 0, 1);
+	gluLookAt(S_RADIO, 0, 0, 0, 0, 0, 0, 0, 1);
 
 	//Check For Error
 	GLenum error = glGetError();
