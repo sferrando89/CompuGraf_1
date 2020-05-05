@@ -34,10 +34,6 @@ Camera::Camera()
 	y = r * sin(theeta) * sin(phi);
 	z = r * cos(phi);
 
-	Map map = GameManager::GetInstance()->getGameMap();
-
-	direction = Vector3( x - map.center.getX(), y - map.center.getY(), z - map.center.getZ());
-
 }
 
 
@@ -71,6 +67,6 @@ void Camera::apply()
 	Player player = GameManager::GetInstance()->getPlayer();
 	glLoadIdentity();
 	
-	gluLookAt(x, y, z, player.position_x, player.position_y, player.position_z, 0, 0, 1);
+	gluLookAt(x, y, z, 0, 0, 0, 0, 0, 1);
 
 }
