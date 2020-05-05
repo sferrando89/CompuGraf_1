@@ -14,14 +14,14 @@ class GameManager
         // Private constructor so that no objects can be created.
         GameManager();
 		Map gameMap;
-		Player player;
+		Player *player;
         LTimer timer;
     public:
         static GameManager* GetInstance();
 		void HandleMovement(SDL_Keycode key);
 		bool CheckWinCondition();
         Map getGameMap();
-        Player getPlayer();
+        Player* getPlayer();
         void switchTimer();
         bool isPaused();
         Uint32 getPlayTime();

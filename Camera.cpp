@@ -38,7 +38,7 @@ Camera::Camera()
 
 void Camera::Rotate(float dir_x, float dir_y)
 {
-	Player player = GameManager::GetInstance()->getPlayer();
+	Player* player = GameManager::GetInstance()->getPlayer();
 
 	theeta += dir_x * delta;
 	phi += dir_y * delta;
@@ -71,8 +71,8 @@ void Camera::Rotate(float dir_x, float dir_y)
 
 void Camera::apply()
 {
-	Player player = GameManager::GetInstance()->getPlayer();
+	Player* player = GameManager::GetInstance()->getPlayer();
 	glLoadIdentity();
 	float z_up = 1;
-	gluLookAt(x, y, z, player.currentPosition.x, player.currentPosition.y, player.currentPosition.z, 0, 0, z_up);
+	gluLookAt(x, y, z, player->currentPosition.x, player->currentPosition.y, player->currentPosition.z, 0, 0, z_up);
 }

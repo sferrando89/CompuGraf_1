@@ -11,6 +11,8 @@ class Player
 {
 	private:
 		Settings* settings;
+		static Player* instance;
+		Player(Vector3 position, Direction init_direction);
 
 	public:
 		Vector3 currentPosition;
@@ -22,8 +24,6 @@ class Player
 
 		void startMoving(Vector3 nuevaPos);
 		void updatePlayer();
-
-		Player();
-		Player(Vector3 position, Direction init_direction);
-		
+		static Player* GetInstance();
+		static Player* GetInstance(Vector3 position, Direction init_direction);
 };

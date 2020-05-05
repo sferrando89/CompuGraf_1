@@ -1,11 +1,18 @@
 #include "Player.h"
 
-Player::Player() 
-{
+Player* Player::instance = NULL;
 
+Player* Player::GetInstance(Vector3 position, Direction init_direction) {
+	if (!instance) {
+		instance = new Player(position, init_direction);
+	}
+	return instance;
 }
 
-//Player::Player(int init_m, int init_n, int init_o, Direction_x init_direction_x, Direction_y init_direction_y) 
+Player* Player::GetInstance() {
+	return instance;
+}
+
 Player::Player(Vector3 position, Direction init_direction)
 {
 	currentPosition = position;
@@ -17,6 +24,7 @@ Player::Player(Vector3 position, Direction init_direction)
 
 void Player::startMoving(Vector3 nuevaPos) {
 	isMoving = true;
+	percentageTraveled = 0;
 	oldPosition = currentPosition;
 	currentPosition = nuevaPos;
 }

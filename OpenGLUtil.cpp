@@ -152,7 +152,7 @@ bool initTextTexture() {
 bool initGL() {
 	//Initialize Projection Matrix
 
-	Player player = GameManager::GetInstance()->getPlayer();
+	Player* player = GameManager::GetInstance()->getPlayer();
 
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
@@ -169,7 +169,7 @@ bool initGL() {
 	glEnable(GL_DEPTH_TEST);
 
 	glLoadIdentity();
-	gluLookAt(S_RADIO, 0, 0, player.currentPosition.x, player.currentPosition.y, player.currentPosition.z, 0, 0, 1);
+	gluLookAt(S_RADIO, 0, 0, player->currentPosition.x, player->currentPosition.y, player->currentPosition.z, 0, 0, 1);
 
 	//Check For Error
 	GLenum error = glGetError();
@@ -364,17 +364,19 @@ void renderMap()
 
 void renderPlayer()
 {
-	Player player = GameManager::GetInstance()->getPlayer();
+	Player* player = GameManager::GetInstance()->getPlayer();
 
-	int currX = player.currentPosition.x;
-	int currY = player.currentPosition.y;
+	int currX = player->currentPosition.x;
+	int currY = player->currentPosition.y;
 
-	int oldX = player.oldPosition.x;
-	int oldY = player.oldPosition.y;
+	int oldX = player->oldPosition.x;
+	int oldY = player->oldPosition.y;
 
-	//if (player.isMoving) {
-	if (false) {
-		float distanceDone = player.percentageTraveled;
+	if (player->isMoving) {
+		float distanceDone = player->percentageTraveled;
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glBegin(GL_QUADS);
+		glColor3f(1, 1, 1);
 		//UP
 		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map.GetCubeHeight(oldX, oldY) + 1 + ((map.GetCubeHeight(currX, currY) - map.GetCubeHeight(oldX, oldY)) * distanceDone));
 		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map.GetCubeHeight(oldX, oldY) + 1 + ((map.GetCubeHeight(currX, currY) - map.GetCubeHeight(oldX, oldY)) * distanceDone));
@@ -387,7 +389,7 @@ void renderPlayer()
 		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map.GetCubeHeight(oldX, oldY) + ((map.GetCubeHeight(currX, currY) - map.GetCubeHeight(oldX, oldY)) * distanceDone));
 		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map.GetCubeHeight(oldX, oldY) + ((map.GetCubeHeight(currX, currY) - map.GetCubeHeight(oldX, oldY)) * distanceDone));
 
-		if (player.direction == Direction::up)
+		if (player->direction == Direction::up)
 			glColor3f(0, 1, 0);
 
 		//FRONT
@@ -398,7 +400,7 @@ void renderPlayer()
 
 		glColor3f(1, 1, 1);
 
-		if (player.direction == Direction::right)
+		if (player->direction == Direction::right)
 			glColor3f(0, 1, 0);
 
 
@@ -410,7 +412,7 @@ void renderPlayer()
 
 		glColor3f(1, 1, 1);
 
-		if (player.direction == Direction::left)
+		if (player->direction == Direction::left)
 			glColor3f(0, 1, 0);
 
 		//RIGHT
@@ -421,7 +423,7 @@ void renderPlayer()
 
 		glColor3f(1, 1, 1);
 
-		if (player.direction == Direction::down)
+		if (player->direction == Direction::down)
 			glColor3f(0, 1, 0);
 
 		//BACK
@@ -492,7 +494,7 @@ void renderPlayer()
 		glVertex3f(currX + 1, currY + 1, map.GetCubeHeight(currX, currY));
 		glVertex3f(currX + 1, currY, map.GetCubeHeight(currX, currY));
 
-		if (player.direction == Direction::up)
+		if (player->direction == Direction::up)
 			glColor3f(0, 1, 0);
 
 		//FRONT
@@ -503,7 +505,7 @@ void renderPlayer()
 
 		glColor3f(1, 1, 1);
 
-		if (player.direction == Direction::right)
+		if (player->direction == Direction::right)
 			glColor3f(0, 1, 0);
 
 
@@ -515,7 +517,7 @@ void renderPlayer()
 
 		glColor3f(1, 1, 1);
 
-		if (player.direction == Direction::left)
+		if (player->direction == Direction::left)
 			glColor3f(0, 1, 0);
 
 		//RIGHT
@@ -526,7 +528,7 @@ void renderPlayer()
 
 		glColor3f(1, 1, 1);
 
-		if (player.direction == Direction::down)
+		if (player->direction == Direction::down)
 			glColor3f(0, 1, 0);
 
 		//BACK
