@@ -57,8 +57,9 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 				int new_x = player.currentPosition.x;
 				int new_y = player.currentPosition.y + 1;
 				if (gameMap.validMovement(player.currentPosition.x, player.currentPosition.y, new_x, new_y)) {
-					//player.isPlayerMoving = true;
-					player.currentPosition = Vector3(new_x, new_y, player.currentPosition.z);
+					Vector3 nuevaPos= Vector3(new_x, new_y, player.currentPosition.z);
+					player.startMoving(nuevaPos);
+					player.currentPosition = nuevaPos;
 					gameMap.PaintCube(player.currentPosition.x, player.currentPosition.y);
 				}
 			}
@@ -68,14 +69,15 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 		case SDLK_a:
 
 			player.direction = Direction::left;
-
+			
 			if (player.currentPosition.x > 0)
 			{
 				int new_x = player.currentPosition.x - 1;
 				int new_y = player.currentPosition.y;
 				if (gameMap.validMovement(player.currentPosition.x, player.currentPosition.y, new_x, new_y)) {
-					//player.isPlayerMoving = true;
-					player.currentPosition = Vector3(new_x, new_y, player.currentPosition.z);
+					Vector3 nuevaPos = Vector3(new_x, new_y, player.currentPosition.z);
+					player.startMoving(nuevaPos);
+					player.currentPosition = nuevaPos;
 					gameMap.PaintCube(player.currentPosition.x, player.currentPosition.y);
 				}
 			}
@@ -91,8 +93,9 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 				int new_x = player.currentPosition.x + 1;
 				int new_y = player.currentPosition.y;
 				if (gameMap.validMovement(player.currentPosition.x, player.currentPosition.y, new_x, new_y)) {
-					//player.isPlayerMoving = true;
-					player.currentPosition = Vector3(new_x, new_y, player.currentPosition.z);
+					Vector3 nuevaPos = Vector3(new_x, new_y, player.currentPosition.z);
+					player.startMoving(nuevaPos);
+					player.currentPosition = nuevaPos;
 					gameMap.PaintCube(player.currentPosition.x, player.currentPosition.y);
 				}
 			}
@@ -108,8 +111,9 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 				int new_x = player.currentPosition.x;
 				int new_y = player.currentPosition.y - 1;
 				if (gameMap.validMovement(player.currentPosition.x, player.currentPosition.y, new_x, new_y)) {
-					//player.isPlayerMoving = true;
-					player.currentPosition = Vector3(new_x, new_y, player.currentPosition.z);
+					Vector3 nuevaPos = Vector3(new_x, new_y, player.currentPosition.z);
+					player.startMoving(nuevaPos);
+					player.currentPosition = nuevaPos;
 					gameMap.PaintCube(player.currentPosition.x, player.currentPosition.y);
 				}
 			}

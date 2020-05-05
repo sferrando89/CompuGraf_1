@@ -45,6 +45,8 @@ int main(int argc[], char* args[]) {
     while (!quit)
     {
         capTimer.restart();
+        Player player = gameManager->getPlayer();
+
         //cout << getAvgFrames() << endl;
 		quit = inputHandler->Handle();
 
@@ -53,6 +55,9 @@ int main(int argc[], char* args[]) {
 			cout << "Partida ganada!";
 		}
 
+        if (player.isMoving) {
+            player.updatePlayer();
+        }
 		//Render quad
         if (!skipNextFrame) {
             render();
