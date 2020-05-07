@@ -5,12 +5,15 @@
 #include <gl\GL.h>
 #include <gl\GLU.h>
 #include <stdio.h>
+#include "Vector3.h"
 
 //Screen Constants
 const int SCREEN_WIDTH = 640;
 const int SCREEN_HEIGHT = 480;
 const int SCREEN_FPS = 60;
-const int S_RADIO = 15;
+const int S_RADIO = 10;
+
+//Vector3 mapCenter;
 
 bool initSDL();
 /*Initialize SDL*/

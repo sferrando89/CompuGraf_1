@@ -63,6 +63,8 @@ bool InputHandler::Handle() {
 		}
 		if (event.type == SDL_MOUSEBUTTONUP)
 		{
+			dir_t = 0;
+			dir_p = 0;	
 			mousePressed = false;
 		}
 		if (mousePressed)
@@ -94,6 +96,8 @@ bool InputHandler::Handle() {
 			{
 				dir_p = 0;
 			}
+
+			cout << "dir_t: " << dir_t << " dir_p: " << dir_p << " x: " << x << " previous_x : " << previous_x << "\n";
 
 			previous_x = x;
 			previous_y = y;

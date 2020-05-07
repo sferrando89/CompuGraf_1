@@ -1,6 +1,7 @@
 #pragma once
 #include <iostream>
 #include <vector>
+#include "Vector3.h"
 using namespace std;
 struct cube {
 	int h;
@@ -27,6 +28,8 @@ public:
 	bool isCubePainted(int i, int j);
 
 	bool validMovement(int old_x, int old_y,int x,int y);
+
+	Vector3 getMapCenter();
 
 };
 

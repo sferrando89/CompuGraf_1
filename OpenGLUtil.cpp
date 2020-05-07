@@ -169,7 +169,8 @@ bool initGL() {
 	glEnable(GL_DEPTH_TEST);
 
 	glLoadIdentity();
-	gluLookAt(S_RADIO, 0, 0, 0, 0, 0, 0, 0, 1);
+	//mapCenter = GameManager::GetInstance()->getGameMap().getMapCenter();
+	//gluLookAt(mapCenter.getX(), mapCenter.getY(), mapCenter.getZ(), 0, 0, 0, 0, 0, 1);
 
 	//Check For Error
 	GLenum error = glGetError();
@@ -250,6 +251,12 @@ void updateCamera3d()
 	{
 		Camera::GetInstance()->Rotate(InputHandler::GetInstance()->dir_t,
 			InputHandler::GetInstance()->dir_p);
+
+		// feo feo, pero arregla el bug de que se quede
+		// girando a pesar de que el mouse se quedo quieto
+		InputHandler::GetInstance()->dir_t = 0;
+		InputHandler::GetInstance()->dir_p = 0;
+
 
 	}
 	Camera::GetInstance()->apply();
@@ -722,6 +729,7 @@ int render()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Dibujado de objetos 3D
+	
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 

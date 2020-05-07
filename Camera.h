@@ -14,6 +14,7 @@ class Camera
 		float x = S_RADIO;
 		float y = 0;
 		float z = 0;
+		Vector3 mapCenter;
 	public:
 		static Camera* GetInstance();
 
