@@ -2,7 +2,9 @@
 #include "Vector3.h"
 #include "Settings.h"
 
-enum class Direction { left, right, up, down };
+enum class Direction { up, right, down , left}; // Como las agujas del reloj
+Direction operator++(Direction& d, int);
+Direction operator--(Direction& d, int);
 
 enum class Direction_x { left, right };
 enum class Direction_y { up, down };

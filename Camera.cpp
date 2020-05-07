@@ -1,5 +1,6 @@
 #include "Camera.h"
 #include "GameManager.h"
+#include "Player.h"
 #include <iostream>
 
 /*
@@ -14,6 +15,8 @@
 | /
 ---------------------------------> (x) (m)
 */
+
+
 Camera* Camera::instance = 0;
 
 Camera* Camera::GetInstance(){
@@ -26,6 +29,7 @@ Camera* Camera::GetInstance(){
 Camera::Camera()
 {
 	mapCenter = GameManager::GetInstance()->getGameMap().getMapCenter();
+	
 
 	//theeta = M_PI / 4;
 	//phi = 0;
@@ -46,8 +50,8 @@ Camera::Camera()
 	phi = atan(y / x);
 
 	
-	x = r *cos(phi);
-	y = r* sin(phi);
+	//x = r *cos(phi);
+	//y = r* sin(phi);
 
 	//x = r * sin(theeta) * cos(phi);
 	//y = r * sin(theeta) * sin(phi);
@@ -89,9 +93,68 @@ void Camera::Rotate(float dir_x, float dir_y)
 
 void Camera::apply()
 {
-	Player* player = GameManager::GetInstance()->getPlayer();
-	glLoadIdentity();
 	
-	gluLookAt(x,y,z,mapCenter.getX(), mapCenter.getY(), mapCenter.getZ(), 0, 0, 1);
+	glLoadIdentity();
+	float offset = 5;
+	int offsetX =0;
+	int offsetY =0;
+	
+	float eyePositionX = 0;
+	float eyePositionY = 0;
+	float eyePositionZ = 0;
+
+	Player* player = GameManager::GetInstance()->getPlayer();
+
+	switch(Settings::GetInstance()->cameraMode){
+		case CameraModes::free:
+			gluLookAt(	x,
+						y,
+						z,
+						mapCenter.getX(), 
+						mapCenter.getY(), 
+						mapCenter.getZ(), 
+						0, 0, 1);
+			break;
+		case CameraModes::firstPerson:
+			switch(player->direction)
+			{
+				case Direction::left:
+					offsetX = 1;
+					break;
+				case Direction::right:
+					offsetX = -1;
+					break;
+				case Direction::up:
+					offsetY = -1;
+					break;
+				case Direction::down:
+					offsetY = 1;
+					break;
+
+			}
+
+			eyePositionX = player->currentPosition.x + offset*offsetX;
+			eyePositionY = player->currentPosition.y + offset*offsetY;
+			eyePositionZ = player->currentPosition.z + offset;
+
+			gluLookAt( 	eyePositionX,
+					   	eyePositionY,
+					   	eyePositionZ,
+						player->currentPosition.x,
+						player->currentPosition.y,
+						player->currentPosition.z,
+						0, 0, 1);
+			break;
+		case CameraModes::isometric:
+			gluLookAt(	S_RADIO,
+						S_RADIO,
+						S_RADIO,
+						mapCenter.getX(),
+						mapCenter.getY(),
+						mapCenter.getZ(),
+						0, 0, 1);
+			break;
+	}
+
 
 }

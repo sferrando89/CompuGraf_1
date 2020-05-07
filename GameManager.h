@@ -4,6 +4,7 @@
 #include "Map.h"
 #include "Player.h"
 #include "LTimer.h"
+#include "Settings.h"
 
 // GameManager es singleton
 

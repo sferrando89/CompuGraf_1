@@ -42,6 +42,10 @@ bool InputHandler::Handle() {
 				settingsOn = !settingsOn;
 				gameManager->switchTimer();
 			}
+			else if (event.key.keysym.sym == SDLK_v)
+			{
+				Settings::GetInstance()->cameraMode++;
+			}
 
 			if (!gameManager->isPaused()) {
 				gameManager->HandleMovement(event.key.keysym.sym);
@@ -97,7 +101,7 @@ bool InputHandler::Handle() {
 				dir_p = 0;
 			}
 
-			cout << "dir_t: " << dir_t << " dir_p: " << dir_p << " x: " << x << " previous_x : " << previous_x << "\n";
+			//cout << "dir_t: " << dir_t << " dir_p: " << dir_p << " x: " << x << " previous_x : " << previous_x << "\n";
 
 			previous_x = x;
 			previous_y = y;

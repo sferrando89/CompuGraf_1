@@ -1,6 +1,9 @@
 #pragma once
 #include <SDL.h>
 
+enum class CameraModes {isometric, free, firstPerson};
+CameraModes operator++(CameraModes& d, int);
+
 class Settings
 {
 	private:
@@ -16,6 +19,8 @@ class Settings
 		// varValues[3] = interpolado/facetado
 		bool varValues[4];
 		float gameSpeed = 1;
+
+		CameraModes cameraMode; 
 
 
 		int settingSelected;
