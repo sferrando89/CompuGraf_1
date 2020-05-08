@@ -4,6 +4,9 @@
 #include "Map.h"
 #include "Player.h"
 #include "LTimer.h"
+#include <list>
+#include "Enemy.h"
+#include "Direction.h"
 
 // GameManager es singleton
 
@@ -14,15 +17,18 @@ class GameManager
         // Private constructor so that no objects can be created.
         GameManager();
 		Map gameMap;
-		Player *player;
+		Ficha* player;
         LTimer timer;
+        list<Ficha*>* enemies;
     public:
         static GameManager* GetInstance();
 		void HandleMovement(SDL_Keycode key);
 		bool CheckWinCondition();
         Map getGameMap();
         Player* getPlayer();
+        list<Ficha*>* getEnemies();
         void switchTimer();
         bool isPaused();
         Uint32 getPlayTime();
+        void moveEnemies();
 };

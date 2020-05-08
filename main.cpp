@@ -41,12 +41,12 @@ int main(int argc[], char* args[]) {
 	//bandera que controla el loop principal
     bool quit = false;
     bool skipNextFrame = false;
-    
+    Player* player = gameManager->getPlayer();
+    list<Ficha*>* enemies = GameManager::GetInstance()->getEnemies();
+
     while (!quit)
     {
         capTimer.restart();
-        Player* player = gameManager->getPlayer();
-
         //cout << getAvgFrames() << endl;
 		quit = inputHandler->Handle();
 
@@ -54,10 +54,15 @@ int main(int argc[], char* args[]) {
 			// Gano
 			cout << "Partida ganada!";
 		}
-
-        if (player->isMoving) {
-            player->updatePlayer();
+        if (!gameManager->isPaused()){
+            gameManager->moveEnemies();
+            list<Ficha*>::iterator iterEnemy;
+            for (iterEnemy = enemies->begin(); iterEnemy != enemies->end(); ++iterEnemy) {
+                (*iterEnemy)->updateTokenLogicalPosition();
+            }
+            player->updateTokenLogicalPosition();
         }
+        
 		//Render quad
         if (!skipNextFrame) {
             render();

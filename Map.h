@@ -1,7 +1,8 @@
 #pragma once
-#include <iostream>
 #include <vector>
+#include "Direction.h"
 using namespace std;
+
 struct cube {
 	int h;
 	bool painted;
@@ -12,7 +13,6 @@ class Map
 public:
 	int size_m, size_n;
 	std::vector < std::vector <cube>> matrix; // Cambiar el struct cube por la clase cubo
-
 	Map();
 	Map(int m, int n, vector<vector<int>> init);
 	int GetCubeHeight(int i, int j);
@@ -26,7 +26,7 @@ public:
 
 	bool isCubePainted(int i, int j);
 
-	bool validMovement(int old_x, int old_y,int x,int y);
+	bool validMovement(Direction dir,int old_x, int old_y,int x,int y);
 
 };
 
