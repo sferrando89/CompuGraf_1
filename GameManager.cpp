@@ -62,64 +62,64 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 	if (Settings::GetInstance()->cameraMode == CameraModes::firstPerson){
 		if (!player->isMoving) {
 			switch (key){
-			case SDLK_w:
-				//player->direction = Direction::up;
-				switch (player->direction){
-					case Direction::up:
-						player->direction = Direction::up;
-						new_x = old_x;
-						new_y = old_y + 1;
-						break;
+				case SDLK_w:
+					//player->direction = Direction::up;
+					switch (player->direction){
+						case Direction::up:
+							player->direction = Direction::up;
+							new_x = old_x;
+							new_y = old_y + 1;
+							break;
 
-					case Direction::left:
-						player->direction = Direction::left;
-						new_x = old_x - 1;
-						new_y = old_y;
-						break;
+						case Direction::left:
+							player->direction = Direction::left;
+							new_x = old_x - 1;
+							new_y = old_y;
+							break;
 
-					case Direction::down:
-						player->direction = Direction::right;
-						new_x = old_x + 1;
-						new_y = old_y;
-						break;
+						case Direction::down:
+							player->direction = Direction::down;
+							new_x = old_x;
+							new_y = old_y - 1;
+							break;
 
-					case Direction::right:
-						player->direction = Direction::down;
-						new_x = old_x;
-						new_y = old_y - 1;
-						break;
+						case Direction::right:
+							player->direction = Direction::right;
+							new_x = old_x + 1;
+							new_y = old_y;
+							break;
+					}
+					if (gameMap->validMovement(player->direction, old_x, old_y, new_x, new_y)) {
+						Vector3 nuevaPos = Vector3(new_x, new_y, old_z);
+						player->startMoving(nuevaPos);
+					}
+					break;
+
+				case SDLK_a:
+					player->direction--;
+					break;
+
+				case SDLK_d:
+					player->direction++;
+					break;
+
+				case SDLK_s:
+					switch (player->direction){
+						case Direction::up:
+							player->direction = Direction::down;
+							break;
+						case Direction::left:
+							player->direction = Direction::right;
+							break;
+						case Direction::down:
+							player->direction = Direction::up;
+							break;
+						case Direction::right:
+								player->direction = Direction::left;
+								break;
+					}
+					break;
 				}
-				if (gameMap->validMovement(player->direction, old_x, old_y, new_x, new_y)) {
-					Vector3 nuevaPos = Vector3(new_x, new_y, old_z);
-					player->startMoving(nuevaPos);
-				}
-				break;
-
-			case SDLK_a:
-				player->direction--;
-				break;
-
-			case SDLK_d:
-				player->direction++;
-				break;
-
-			case SDLK_s:
-				switch (player->direction){
-					case Direction::up:
-						player->direction = Direction::down;
-						break;
-					case Direction::left:
-						player->direction = Direction::right;
-						break;
-					case Direction::down:
-						player->direction = Direction::up;
-						break;
-					case Direction::right:
-						player->direction = Direction::left;
-						break;
-				}
-				break;
-			}
 		}
 	}
 	else{
@@ -140,17 +140,17 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 					sigo = true;
 					break;
 
-				case SDLK_d:
-					player->direction = Direction::right;
-					new_x = old_x + 1;
-					new_y = old_y;
-					sigo = true;
-					break;
-
 				case SDLK_s:
 					player->direction = Direction::down;
 					new_x = old_x;
 					new_y = old_y - 1;
+					sigo = true;
+					break;
+
+				case SDLK_d:
+					player->direction = Direction::right;
+					new_x = old_x + 1;
+					new_y = old_y;
 					sigo = true;
 					break;
 			}
@@ -217,28 +217,27 @@ void GameManager::moveEnemies() {
 			bool foundValidDirection = false;
 			while (!foundValidDirection) {
 				int ran = rand() % 4;//de 0 a 3
-				cout << ran << endl;
 				switch (possibleDirections[ran]) {
-				case Direction::up:
-					(*iterEnemy)->direction = Direction::up;
-					new_x = old_x;
-					new_y = old_y + 1;
-					break;
-				case Direction::left:
-					(*iterEnemy)->direction = Direction::left;
-					new_x = old_x - 1;
-					new_y = old_y;
-					break;
-				case Direction::right:
-					(*iterEnemy)->direction = Direction::right;
-					new_x = old_x + 1;
-					new_y = old_y;
-					break;
-				case Direction::down:
-					(*iterEnemy)->direction = Direction::down;
-					new_x = old_x;
-					new_y = old_y - 1;
-					break;
+					case Direction::up:
+						(*iterEnemy)->direction = Direction::up;
+						new_x = old_x;
+						new_y = old_y + 1;
+						break;
+					case Direction::left:
+						(*iterEnemy)->direction = Direction::left;
+						new_x = old_x - 1;
+						new_y = old_y;
+						break;
+					case Direction::right:
+						(*iterEnemy)->direction = Direction::right;
+						new_x = old_x + 1;
+						new_y = old_y;
+						break;
+					case Direction::down:
+						(*iterEnemy)->direction = Direction::down;
+						new_x = old_x;
+						new_y = old_y - 1;
+						break;
 				}
 				if (gameMap->validMovement((*iterEnemy)->direction, old_x, old_y, new_x, new_y)) {
 					Vector3 nuevaPos = Vector3(new_x, new_y, old_z);
