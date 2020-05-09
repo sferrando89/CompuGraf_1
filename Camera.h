@@ -1,6 +1,7 @@
 #pragma once
 #include "OpenGLUtil.h"
 #include <cmath>
+#include "Settings.h"
 
 class Camera
 {
@@ -14,6 +15,11 @@ class Camera
 		float x = S_RADIO;
 		float y = 0;
 		float z = 0;
+		Vector3 mapCenter;
+		
+		// 1 = Modo Libre
+		// 2 = Modo primera persona
+		// 3 = Modo isometrico
 	public:
 		static Camera* GetInstance();
 

@@ -119,3 +119,18 @@ bool Map::validMovement(Direction dir, int old_x, int old_y, int x, int y) {
 	}
 	return true;
 }
+
+Vector3 Map::getMapCenter() {
+	float z = 0;
+	for (int i = 0; i++; i < size_m) {
+		for (int j = 0; j++; j < size_n) {
+			if (matrix[i][j].h > z) {
+				z = matrix[i][j].h;
+			}
+		}
+	}
+
+	Vector3 center;
+	center = Vector3(size_m / 2, size_n / 2, z / 2);
+	return center;
+}

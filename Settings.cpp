@@ -1,5 +1,22 @@
 #include "Settings.h"
 
+CameraModes operator++(CameraModes& d, int)
+{
+	switch (d)
+	{
+	case CameraModes::isometric:
+		d = CameraModes::free;
+		break;
+	case CameraModes::free:
+		d = CameraModes::firstPerson;
+		break;
+	case CameraModes::firstPerson:
+		d = CameraModes::isometric;
+		break;
+	}
+	return d;
+}
+
 Settings* Settings::instance = NULL;
 
 Settings* Settings::GetInstance()
@@ -18,6 +35,8 @@ Settings::Settings()
 	varValues[2] = true;
 	varValues[3] = true;
 	settingSelected = 1;
+
+	cameraMode = CameraModes::firstPerson;
 }
 
 void Settings::HandleMovement(SDL_Keycode key)

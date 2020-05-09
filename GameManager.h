@@ -7,9 +7,9 @@
 #include <list>
 #include "Enemy.h"
 #include "Direction.h"
+#include "Settings.h"
 
 // GameManager es singleton
-
 class GameManager
 {
     private:

@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include "Direction.h"
+#include "Vector3.h"
 using namespace std;
 
 struct cube {
@@ -31,6 +32,8 @@ public:
 	bool isCubePainted(int i, int j);
 
 	bool validMovement(Direction dir,int old_x, int old_y,int x,int y);
+
+	Vector3 getMapCenter();
 
 };
 
