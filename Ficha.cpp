@@ -1,4 +1,7 @@
 #include "Ficha.h"
+#include "Player.h"
+
+Ficha::~Ficha() {}
 
 void Ficha::startMoving(Vector3 nuevaPos) {
 	isMoving = true;
@@ -17,6 +20,11 @@ void Ficha::updateTokenLogicalPosition() {
 			percentageTraveled = 1;
 			isMoving = false;
 			//gamemanager->getGameMap().PaintCube(this->currentPosition.x,this->currentPosition.y);
+			//int a= dynamic_cast<Player*>(this);
+			if (!(dynamic_cast<Player*>(this)==0)) {
+				//NO SE CASTEO a PLAYER
+				map->PaintCube(this->currentPosition.x, this->currentPosition.y);
+			}
 		}
 	}
 }

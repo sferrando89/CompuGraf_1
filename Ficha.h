@@ -9,9 +9,10 @@ class Ficha
 {
 	protected:
 		Settings* settings;
-		//GameManager* gamemanager;
+		Map* map;
 
 	public:
+		virtual ~Ficha();
 		Vector3 currentPosition;
 		Vector3 oldPosition;
 

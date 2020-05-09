@@ -16,7 +16,7 @@ class GameManager
         static GameManager* instance;
         // Private constructor so that no objects can be created.
         GameManager();
-		Map gameMap;
+		Map* gameMap;
 		Ficha* player;
         LTimer timer;
         list<Ficha*>* enemies;
@@ -24,7 +24,7 @@ class GameManager
         static GameManager* GetInstance();
 		void HandleMovement(SDL_Keycode key);
 		bool CheckWinCondition();
-        Map getGameMap();
+        Map* getGameMap();
         Player* getPlayer();
         list<Ficha*>* getEnemies();
         void switchTimer();

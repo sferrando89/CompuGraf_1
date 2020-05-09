@@ -10,11 +10,15 @@ struct cube {
 
 class Map
 {
+private:
+	static Map* instance;
+	Map(int m, int n, vector<vector<int>> init);
 public:
+	static Map* GetInstance();
+	static Map* GetInstance(int m, int n, vector<vector<int>> init);
 	int size_m, size_n;
 	std::vector < std::vector <cube>> matrix; // Cambiar el struct cube por la clase cubo
-	Map();
-	Map(int m, int n, vector<vector<int>> init);
+	
 	int GetCubeHeight(int i, int j);
 
 	bool PaintCube(int i, int j);

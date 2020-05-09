@@ -1,9 +1,17 @@
 #include "Map.h"
 #include <iostream>
 
-Map::Map()
-{
+Map* Map::instance = NULL;
 
+Map* Map::GetInstance(int m, int n, vector<vector<int>> init) {
+	if (!instance) {
+		instance = new Map(m, n, init);
+	}
+	return instance;
+}
+
+Map* Map::GetInstance() {
+	return instance;
 }
 
 Map :: Map(int m, int n, vector<vector<int>> init)
@@ -44,7 +52,6 @@ bool Map::AllCubesPainted() {
 
 void Map :: Print()
 {
-
 	for (int i = 0; i < size_m; i++) {
 		for (int j = 0; j < size_n; j++) {
 			cout << "["<< matrix[i][j].h << " , " << matrix[i][j].painted << "]";
@@ -76,7 +83,6 @@ void Map :: PrintWithCharacter(int i, int j)
 		}
 		cout << "\n";
 	}
-
 	cout << "------------------------------------------------------\n";
 }
 
