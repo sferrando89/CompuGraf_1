@@ -40,7 +40,7 @@ GameManager::GameManager()
 
 	this->player = Player::GetInstance(Vector3(2, 3, 0), Direction::right);
 	this->enemies = new list<Ficha*>;
-	this->enemies->push_front(new Enemy(Vector3(3, 3, 0), Direction::right));
+	this->enemies->push_front(new Enemy(Vector3(0, 0, 0), Direction::right));
 
 	//Player player(0, 0, 0, Direction::right);
 
@@ -54,8 +54,8 @@ GameManager::GameManager()
 
 void GameManager::HandleMovement(SDL_Keycode key) {
 	/* Check the SDLKey values and move change the coords */
-	int new_x;
-	int new_y;
+	int new_x=NULL;
+	int new_y=NULL;
 	int old_x = player->currentPosition.x;
 	int old_y = player->currentPosition.y;
 	int old_z = player->currentPosition.z;
@@ -247,4 +247,36 @@ void GameManager::moveEnemies() {
 			}
 		}
 	}
+}
+
+bool GameManager::detectColision() {
+	list<Ficha*>::iterator iterEnemy;
+	for (iterEnemy = enemies->begin(); iterEnemy != enemies->end(); ++iterEnemy) {
+		if ((*iterEnemy)->currentPosition == player->currentPosition) {
+			if ((*iterEnemy)->isMoving && !player->isMoving) {
+				if ((*iterEnemy)->percentageTraveled > 0.50) {
+					cout << "DEAD 1" << endl;
+					return true;
+				}
+			}
+			else if (!(*iterEnemy)->isMoving && player->isMoving) {
+				if (player->percentageTraveled > 0.50) {
+					cout << "DEAD 2" << endl;
+					return true;
+				}
+			}
+			else if ((*iterEnemy)->isMoving && player->isMoving) {
+				if ((*iterEnemy)->percentageTraveled > 0.50 && player->percentageTraveled > 0.50) {
+					cout << "DEAD 3" << endl;
+					return true;
+				}
+			}
+			else {
+				//INSTA DEAD
+				cout << "DEAD 4" << endl;
+				return true;
+			}
+		}
+	}
+	return false;
 }

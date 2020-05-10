@@ -41,6 +41,7 @@ int main(int argc[], char* args[]) {
 	//bandera que controla el loop principal
     bool quit = false;
     bool skipNextFrame = false;
+    bool colision = false;
     Player* player = gameManager->getPlayer();
     list<Ficha*>* enemies = GameManager::GetInstance()->getEnemies();
 
@@ -61,6 +62,7 @@ int main(int argc[], char* args[]) {
                 (*iterEnemy)->updateTokenLogicalPosition();
             }
             player->updateTokenLogicalPosition();
+            colision=gameManager->detectColision();
         }
         
 		//Render quad
@@ -68,6 +70,10 @@ int main(int argc[], char* args[]) {
             render();
         }
         skipNextFrame = false;
+
+        if (colision) {
+            //PERDER
+        }
 
         int frameTicks = capTimer.getTicks();
         if (frameTicks <= SCREEN_TICKS_PER_FRAME)

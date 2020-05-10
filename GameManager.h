@@ -31,4 +31,5 @@ class GameManager
         bool isPaused();
         Uint32 getPlayTime();
         void moveEnemies();
+        bool detectColision();
 };

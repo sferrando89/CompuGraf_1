@@ -14,6 +14,10 @@ Vector3::Vector3(float _x, float _y, float _z) {
 	this->z = _z;
 }
 
+bool Vector3::operator==(Vector3& v) {
+	return this->x==v.x && this->y == v.y;
+}
+
 float Vector3::getX() {
 	return this->x;
 }

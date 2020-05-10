@@ -3,6 +3,7 @@
 #include "InputHandler.h"
 #include "Settings.h"
 #include <iostream> 
+#include <string> 
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -14,16 +15,28 @@ SDL_Surface* gScreenSurface = NULL;
 SDL_GLContext gContext;
 
 // Text related
+struct _text {
+	const char* texto;
+	SDL_Color color;
+	/*~_text(){
+		delete[](texto);
+	}*/
+};
+SDL_Surface* intermediary=NULL;
 TTF_Font* font;
-SDL_Surface* sFont;
+SDL_Surface* sFont=NULL;
 GLuint textTexture;
 GLuint* settingsTextTexturesFixed;
-
+GLuint* hudTextTexturesFixed=NULL;
+_text* hudDynamicText = NULL;
 
 bool firstdraw = false;
 int renderedFrames = 0;
 
-Map* map = GameManager::GetInstance()->getGameMap();
+GameManager* gamemanager = GameManager::GetInstance();
+Map* map = gamemanager->getGameMap();
+
+
 
 template<typename T>
 std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
@@ -60,7 +73,7 @@ bool initTextTexture() {
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
 		printf("Error en el bindtexture dentro del render del texto\n");
-		printf((const char*)error);
+		//printf((const char*)error);
 		return false;
 	}
 
@@ -98,15 +111,12 @@ bool initTextTexture() {
 	// settingsTextTexturesFixed[14] = "Lento" Apagado
 	// settingsTextTexturesFixed[15] = "Rapido" Prendido
 	// settingsTextTexturesFixed[16] = "Rapido" Apagado
+	// settingsTextTexturesFixed[17] = "Tiempo" 
+	// settingsTextTexturesFixed[18] = "Puntaje" 
 
 	int n = 17;
 	settingsTextTexturesFixed = new GLuint[n];
 	glGenTextures(n, settingsTextTexturesFixed);
-
-	struct _text {
-		const char* texto;
-		SDL_Color color;
-	};
 
 	_text* textos = new _text[n];
 	textos[0] = { "SETTINGS",		{255,0,0} };
@@ -149,6 +159,83 @@ bool initTextTexture() {
 	return true;
 }
 
+
+void updateHudTextTexture(string tiempo) {
+
+	if (hudTextTexturesFixed != NULL) {
+		delete[](hudTextTexturesFixed);
+	}
+	if (hudDynamicText != NULL) {
+		delete[](hudDynamicText);
+	}
+	//if (sFont != NULL) {
+	//	delete(sFont);
+	//}
+	//if (intermediary != NULL) {
+	//	delete(intermediary);
+	//}
+
+	SDL_Color color = { 255, 0, 0 };
+
+	intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	SDL_BlitSurface(sFont, 0, intermediary, 0);
+
+	glGenTextures(1, &textTexture);
+
+	// Bindeo la textura para poder usarla en el draw
+	// "Paso" la surface con la textura de texto a la de opengl
+	glBindTexture(GL_TEXTURE_2D, textTexture);
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		printf("Error en el bindtexture dentro del render del texto\n");
+		//printf((const char*)error);
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+		GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+
+	error = glGetError();
+	if (error != GL_NO_ERROR) {
+		// ESTO DE ACA ABAJO ME ROMPIA EL NSIGHT ANDA A SABER POR QUE
+		//printf("Error en el TexImage dentro del initTextTexture \n");
+		//printf((const char*)error);
+		//return false;
+	}
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+	int k = 1;
+	hudTextTexturesFixed = new GLuint[k];
+	glGenTextures(k, hudTextTexturesFixed);
+
+	std::string str("Tiempo: "+tiempo);
+	char* cstr = new char[str.length() + 1];
+	std::strcpy(cstr, str.c_str());
+	const char* xD = cstr;
+	
+	_text* textos = new _text[k];
+	textos[0] = { xD,	{0,0,255} };
+
+	for (int i = 0; i < k; i++){
+		sFont = TTF_RenderText_Solid(font, textos[i].texto, textos[i].color);
+		intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		SDL_BlitSurface(sFont, 0, intermediary, 0);
+
+		glBindTexture(GL_TEXTURE_2D, hudTextTexturesFixed[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+			GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glBindTexture(GL_TEXTURE_2D, NULL); // Desbindeo
+	}
+	delete[](cstr);
+	delete[](textos);
+}
+
 bool initGL() {
 	//Initialize Projection Matrix
 
@@ -175,7 +262,7 @@ bool initGL() {
 	//Check For Error
 	GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
-		printf("Error initializing OpenGL! %s\n");
+		//printf("Error initializing OpenGL! %s\n");
 		return false;
 	}
 
@@ -852,6 +939,10 @@ void renderTextTexture(GLuint texture, int x, int y)
 
 void renderHud()
 {
+	//INTENTO QUE ESCRIBE EN PANTALLA PERO DEJA MEMORIA COLGADA
+	/*Uint32 a = gamemanager->getPlayTime();
+	updateHudTextTexture(std::to_string(a/1000));
+	renderTextTexture(hudTextTexturesFixed[0], 30, 0);*/
 
 	float z = 0.5;
 
@@ -866,8 +957,6 @@ void renderHud()
 
 
 	glEnd();
-
-
 }
 
 void renderSettings()
@@ -881,6 +970,7 @@ void renderSettings()
 	{
 		renderTextTexture(settingsTextTexturesFixed[1], 30, 30);
 	}
+	// varValues[0] = velocidad lenta
 	if (Settings::GetInstance()->varValues[0]) {
 		renderTextTexture(settingsTextTexturesFixed[13], 300, 30);
 		renderTextTexture(settingsTextTexturesFixed[16], 420, 30);
@@ -898,6 +988,8 @@ void renderSettings()
 	{
 		renderTextTexture(settingsTextTexturesFixed[3], 30, 70);
 	}
+
+	// varValues[1] = wireframe mode on
 	if (Settings::GetInstance()->varValues[1]) {
 		renderTextTexture(settingsTextTexturesFixed[9], 300, 70);
 		renderTextTexture(settingsTextTexturesFixed[12], 350, 70);
@@ -915,6 +1007,8 @@ void renderSettings()
 	{
 		renderTextTexture(settingsTextTexturesFixed[5], 30, 110);
 	}
+
+	// varValues[2] = texturas
 	if (Settings::GetInstance()->varValues[2]) {
 		renderTextTexture(settingsTextTexturesFixed[9], 300, 110);
 		renderTextTexture(settingsTextTexturesFixed[12], 350, 110);
@@ -932,6 +1026,8 @@ void renderSettings()
 	{
 		renderTextTexture(settingsTextTexturesFixed[7], 30, 150);
 	}
+
+	// varValues[3] = interpolado/facetado
 	if (Settings::GetInstance()->varValues[3]) {
 		renderTextTexture(settingsTextTexturesFixed[9], 300, 150);
 		renderTextTexture(settingsTextTexturesFixed[12], 350, 150);
