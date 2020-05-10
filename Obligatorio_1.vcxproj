@@ -160,9 +160,11 @@
     <ClInclude Include="Direction.h" />
     <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="LTimer.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="OpenGLUtil.h" />
     <ClInclude Include="Ficha.h" />
     <ClInclude Include="Player.h" />
