@@ -982,16 +982,6 @@ int render()
 	
 
 	glPushMatrix();
-	
-	glScalef(.05, .05, .05);
-
-
-	glTranslatef(	-mesh_right_foot[0].getX()
-		, 
-					-mesh_right_foot[0].getY()
-		, 
-					0
-		);
 
 	//glRotatef(90, 0, 0, 0);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -1000,38 +990,38 @@ int render()
 	glColor3f(1, 1, 0);
 	for (int j = 0; j < mesh_body.size(); j++)
 	{
-		glVertex3f(mesh_body[j].getX(), mesh_body[j].getY(), mesh_body[j].getZ());
+		glVertex3f(mesh_body[j].getX(), mesh_body[j].getY(), mesh_body[j].getZ() + 1);
 	}
 	//Dibujo Nariz
 	glColor3f(0, 1, 1);
 	for (int j = 0; j < mesh_nose.size(); j++)
 	{
-		glVertex3f(mesh_nose[j].getX(), mesh_nose[j].getY(), mesh_nose[j].getZ());
+		glVertex3f(mesh_nose[j].getX(), mesh_nose[j].getY(), mesh_nose[j].getZ() +1);
 	}
 	//Dibujo Ojo Izquierdo
 	glColor3f(1, 0, 0);
 	for (int j = 0; j < mesh_left_eye.size(); j++)
 	{
-		glVertex3f(mesh_left_eye[j].getX(), mesh_left_eye[j].getY(), mesh_left_eye[j].getZ());
+		glVertex3f(mesh_left_eye[j].getX(), mesh_left_eye[j].getY(), mesh_left_eye[j].getZ()+1);
 	}
 	//Dibujo Ojo Derecho
 	glColor3f(1, 0, 0);
 	for (int j = 0; j < mesh_right_eye.size(); j++)
 	{
-		glVertex3f(mesh_right_eye[j].getX(), mesh_right_eye[j].getY(), mesh_right_eye[j].getZ());
+		glVertex3f(mesh_right_eye[j].getX(), mesh_right_eye[j].getY(), mesh_right_eye[j].getZ()+1);
 	}
 	//Dibujo Pie Izquierdo
 	glColor3f(1, 0, 0);
 	for (int j = 0; j < mesh_left_foot.size(); j++)
 	{
-		glVertex3f(mesh_left_foot[j].getX(), mesh_left_foot[j].getY(), mesh_left_foot[j].getZ());
+		glVertex3f(mesh_left_foot[j].getX(), mesh_left_foot[j].getY(), mesh_left_foot[j].getZ()+1);
 	}
 	//Dibjo Pie Derecho
 	glColor3f(1, 0, 0);
 	for (int j = 0; j < mesh_right_foot.size(); j++)
 	{
-		glVertex3f(mesh_right_foot[j].getX(), mesh_right_foot[j].getY(), mesh_right_foot[j].getZ());
-	}
+		glVertex3f(mesh_right_foot[j].getX(), mesh_right_foot[j].getY(), mesh_right_foot[j].getZ()+1);
+	}	
 	glEnd();
 
 	glPopMatrix();
