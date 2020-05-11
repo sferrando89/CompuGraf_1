@@ -1,31 +1,27 @@
 #pragma once
 #include "Vector3.h"
 #include "Settings.h"
+#include "Ficha.h"
+#include "OBJLoader.h"
 
-enum class Direction { up, right, down , left}; // Como las agujas del reloj
-Direction operator++(Direction& d, int);
-Direction operator--(Direction& d, int);
+struct qbert {
+	std::vector<Vector3> mesh_body = loadOBJ("models/Cuerpo.obj");
+	std::vector<Vector3> mesh_nose = loadOBJ("models/Nariz.obj");
+	std::vector<Vector3> mesh_left_eye = loadOBJ("models/Ojo_Izquierdo.obj");
+	std::vector<Vector3> mesh_right_eye = loadOBJ("models/Ojo_Derecho.obj");
+	std::vector<Vector3> mesh_left_foot = loadOBJ("models/Pie_Izquierdo.obj");
+	std::vector<Vector3> mesh_right_foot = loadOBJ("models/Pie_Derecho.obj");
+};
 
-enum class Direction_x { left, right };
-enum class Direction_y { up, down };
-
-class Player
+class Player : public Ficha
 {
 	private:
-		Settings* settings;
 		static Player* instance;
+		qbert model;
 		Player(Vector3 position, Direction init_direction);
 
 	public:
-		Vector3 currentPosition;
-		Vector3 oldPosition;
-
-		float percentageTraveled;
-		Direction direction;
-		bool isMoving;
-
-		void startMoving(Vector3 nuevaPos);
-		void updatePlayer();
 		static Player* GetInstance();
-		static Player* GetInstance(Vector3 position, Direction init_direction);
+		static Player* GetInstance(Vector3 position, Direction init_direction);		
+		void draw();
 };

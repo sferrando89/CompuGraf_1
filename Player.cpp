@@ -2,48 +2,6 @@
 #include <iostream>
 using namespace std;
 
-Direction operator++(Direction& d, int)
-{
-	switch (d)
-	{
-	case Direction::up:
-		d = Direction::right;
-		break;
-	case Direction::right:
-		d = Direction::down;
-		break;
-	case Direction::down:
-		d = Direction::left;
-		break;
-	case Direction::left:
-		d = Direction::up;
-		break;
-	}
-	return d;
-}
-
-Direction operator--(Direction& d, int)
-{
-	switch (d)
-	{
-	case Direction::up:
-		d = Direction::left;
-		break;
-	case Direction::left:
-		d = Direction::down;
-		break;
-	case Direction::down:
-		d = Direction::right;
-		break;
-	case Direction::right:
-		d = Direction::up;
-		break;
-	}
-	return d;
-}
-
-
-
 Player* Player::instance = NULL;
 
 Player* Player::GetInstance(Vector3 position, Direction init_direction) {
@@ -62,33 +20,60 @@ Player::Player(Vector3 position, Direction init_direction)
 	currentPosition = position;
 	isMoving = false;
 	direction = init_direction;
+	oldDirection = init_direction;
 	settings = Settings::GetInstance();
+	//gamemanager= GameManager::GetInstance();
+	map = Map::GetInstance();
 	percentageTraveled = 0;
+
+	//carga el modelo:
+	model.mesh_body = loadOBJ("models/Cuerpo.obj");
+	model.mesh_nose = loadOBJ("models/Nariz.obj");
+	model.mesh_left_eye = loadOBJ("models/Ojo_Izquierdo.obj");
+	model.mesh_right_eye = loadOBJ("models/Ojo_Derecho.obj");
+	model.mesh_left_foot = loadOBJ("models/Pie_Izquierdo.obj");
+	model.mesh_right_foot = loadOBJ("models/Pie_Derecho.obj");
 }
 
-void Player::startMoving(Vector3 nuevaPos) {
-	isMoving = true;
-	percentageTraveled = 0;
-	oldPosition = currentPosition;
-	currentPosition = nuevaPos;
-}
-
-void Player::updatePlayer() {
-	int fps=settings->SCREEN_FPS;
-	float speed = settings->gameSpeed;
-	float porcentajeParticion = speed / fps;
-	percentageTraveled = percentageTraveled + porcentajeParticion;
-	if (percentageTraveled>1) {
-		percentageTraveled = 1;
-		isMoving = false;
+void Player::draw()
+{
+	//Dibujo al personaje
+	glBegin(GL_TRIANGLES);
+	//Dibujo cuerpo
+	glColor3f(1.0f, 0.9f, 0.0f);
+	for (int j = 0; j < model.mesh_body.size(); j++)
+	{
+		glVertex3f(model.mesh_body[j].getX(), model.mesh_body[j].getY(), model.mesh_body[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
-	/*distanceTraveled.x = distanceTraveled.x + ((oldPosition.x - currentPosition.x) / settings->gameSpeed * settings->SCREEN_FPS);
-	distanceTraveled.y = distanceTraveled.y + ((oldPosition.y - currentPosition.y) / settings->gameSpeed * settings->SCREEN_FPS);
-	distanceTraveled.z = distanceTraveled.z + ((oldPosition.z - currentPosition.z) / settings->gameSpeed * settings->SCREEN_FPS);
-	if (distanceTraveled.x > 0.9 || distanceTraveled.y > 0.9 || distanceTraveled.z > 0.9) {
-		distanceTraveled.x = 1;
-		distanceTraveled.y = 1;
-		distanceTraveled.z = 1;
-		isMoving = false;
-	}*/
+	//Dibujo Nariz
+	glColor3f(0.4f, 0.0f, 0.7f);
+	for (int j = 0; j < model.mesh_nose.size(); j++)
+	{
+		glVertex3f(model.mesh_nose[j].getX(), model.mesh_nose[j].getY(), model.mesh_nose[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
+	}
+	//Dibujo Ojo Izquierdo
+	glColor3f(0.0f, 0.5f, 1.0f);
+	for (int j = 0; j < model.mesh_left_eye.size(); j++)
+	{
+		glVertex3f(model.mesh_left_eye[j].getX(), model.mesh_left_eye[j].getY(), model.mesh_left_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
+	}
+	//Dibujo Ojo Derecho
+	glColor3f(0.0f, 0.5f, 1.0f);
+	for (int j = 0; j < model.mesh_right_eye.size(); j++)
+	{
+		glVertex3f(model.mesh_right_eye[j].getX(), model.mesh_right_eye[j].getY(), model.mesh_right_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
+	}
+	//Dibujo Pie Izquierdo
+	glColor3f(1.0f, 0.5f, 0.0f);
+	for (int j = 0; j < model.mesh_left_foot.size(); j++)
+	{
+		glVertex3f(model.mesh_left_foot[j].getX(), model.mesh_left_foot[j].getY(), model.mesh_left_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
+	}
+	//Dibjo Pie Derecho
+	glColor3f(1.0f, 0.5f, 0.0f);
+	for (int j = 0; j < model.mesh_right_foot.size(); j++)
+	{
+		glVertex3f(model.mesh_right_foot[j].getX(), model.mesh_right_foot[j].getY(), model.mesh_right_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
+	}
+	glEnd();
 }

@@ -14,6 +14,9 @@ public:
 
     ~Vector3();
 
+    bool operator==(Vector3& v);
+    //Si v.x==otro.x && v.y==otro.y, el z se ignora
+
     Vector3 add(Vector3 w); 
     //devuelve un nuevo vector que resulta de sumarle w
 

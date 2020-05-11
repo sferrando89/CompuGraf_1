@@ -99,7 +99,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;_CRT_SECURE_NO_WARNINGS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
     </ClCompile>
     <Link>
@@ -142,23 +142,31 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="GameManager.cpp" />
     <ClCompile Include="InputHandler.cpp" />
     <ClCompile Include="LTimer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="OpenGLUtil.cpp" />
+    <ClCompile Include="Ficha.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="Settings.cpp" />
+    <ClCompile Include="Direction.cpp" />
     <ClCompile Include="Vector3.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Direction.h" />
+    <ClInclude Include="Enemy.h" />
     <ClInclude Include="GameManager.h" />
+    <ClInclude Include="Mesh.h" />
     <ClInclude Include="InputHandler.h" />
     <ClInclude Include="LTimer.h" />
     <ClInclude Include="Map.h" />
+    <ClInclude Include="OBJLoader.h" />
     <ClInclude Include="OpenGLUtil.h" />
+    <ClInclude Include="Ficha.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Vector3.h" />

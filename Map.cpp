@@ -1,12 +1,17 @@
 #include "Map.h"
-#include <vector>
 #include <iostream>
 
-using namespace std;
+Map* Map::instance = NULL;
 
-Map::Map()
-{
+Map* Map::GetInstance(int m, int n, vector<vector<int>> init) {
+	if (!instance) {
+		instance = new Map(m, n, init);
+	}
+	return instance;
+}
 
+Map* Map::GetInstance() {
+	return instance;
 }
 
 Map :: Map(int m, int n, vector<vector<int>> init,float isoSize, float isoOffset, float fOffset)
@@ -51,7 +56,6 @@ bool Map::AllCubesPainted() {
 
 void Map :: Print()
 {
-
 	for (int i = 0; i < size_m; i++) {
 		for (int j = 0; j < size_n; j++) {
 			cout << "["<< matrix[i][j].h << " , " << matrix[i][j].painted << "]";
@@ -83,7 +87,6 @@ void Map :: PrintWithCharacter(int i, int j)
 		}
 		cout << "\n";
 	}
-
 	cout << "------------------------------------------------------\n";
 }
 
@@ -92,7 +95,29 @@ bool Map::isCubePainted(int i, int j)
 	return matrix[i][j].painted;
 }
 
-bool Map::validMovement(int old_x, int old_y, int x, int y) {
+bool Map::validMovement(Direction dir, int old_x, int old_y, int x, int y) {
+	switch (dir) {
+		case Direction::up:
+			if (!(old_y < this->size_n - 1)) {
+				return false;
+			}
+			break;
+		case Direction::left:
+			if (!(old_x > 0)) {
+				return false;
+			}
+			break;
+		case Direction::right:
+			if (!(old_x < this->size_m - 1)) {
+				return false;
+			}
+			break;
+		case Direction::down:
+			if (!(old_y > 0)) {
+				return false;
+			}
+			break;
+	}
 	if (abs(matrix[old_x][old_y].h- matrix[x][y].h)>=2 || matrix[x][y].h == 0) {
 		return false;
 	}

@@ -1,4 +1,5 @@
 #include "Settings.h"
+#include <iostream>
 
 CameraModes operator++(CameraModes& d, int)
 {
@@ -41,26 +42,48 @@ Settings::Settings()
 
 void Settings::HandleMovement(SDL_Keycode key)
 {
-	switch (key)
-	{
-	case SDLK_w:
-		if (settingSelected > 1)
-		{
-			settingSelected--;
-		}
-		break;
-	case SDLK_s:
+	switch (key){
+		case SDLK_w:
+			if (settingSelected > 1){
+				settingSelected--;
+			}
+			break;
+		case SDLK_s:
 
-		if (settingSelected < 4)
-		{
-			settingSelected++;
+			if (settingSelected < 4){
+				settingSelected++;
+			}
+			break;
+		case SDLK_d:
+			varValues[settingSelected - 1] = false;
+			break;
+		case SDLK_a:
+			varValues[settingSelected - 1] = true;
+			break;
 		}
-		break;
-	case SDLK_d:
-		varValues[settingSelected - 1] = false;
-		break;
-	case SDLK_a:
-		varValues[settingSelected - 1] = true;
-		break;
+	for (int i = 0; i < std::size(varValues); i++) {
+		switch (i) {
+			case 0:
+				// varValues[0] = velocidad lenta
+				if (varValues[i]) {
+					gameSpeed = 1;
+				}
+				else {
+					gameSpeed = 2;
+				}
+				break;
+			case 1:
+				// varValues[1] = wireframe mode on
+		
+				break;
+			case 2:
+				// varValues[2] = texturas
+		
+				break;
+			case 3:
+				// varValues[3] = interpolado/facetado
+				break;
+		}
 	}
+		
 }

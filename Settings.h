@@ -22,7 +22,6 @@ class Settings
 
 		CameraModes cameraMode; 
 
-
 		int settingSelected;
 		void HandleMovement(SDL_Keycode key);
 };

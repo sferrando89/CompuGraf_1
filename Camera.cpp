@@ -1,6 +1,7 @@
 #include "Camera.h"
 #include "GameManager.h"
 #include "Player.h"
+#include "Direction.h"
 #include <iostream>
 
 /*
@@ -28,7 +29,7 @@ Camera* Camera::GetInstance(){
 
 Camera::Camera()
 {
-	mapCenter = GameManager::GetInstance()->getGameMap().getMapCenter();
+	mapCenter = GameManager::GetInstance()->getGameMap()->getMapCenter();
 	
 
 	//theeta = M_PI / 4;
@@ -64,7 +65,7 @@ Camera::Camera()
 
 void Camera::Rotate(float dir_x, float dir_y)
 {
-	//Player* player = GameManager::GetInstance()->getPlayer();
+	Ficha* player = GameManager::GetInstance()->getPlayer();
 
 
 	//theeta += -dir_y * delta;
@@ -104,7 +105,7 @@ void Camera::apply()
 	float eyePositionY = 0;
 	float eyePositionZ = 0;
 
-	Player* player = GameManager::GetInstance()->getPlayer();
+	Ficha* player = GameManager::GetInstance()->getPlayer();
 
 	switch(Settings::GetInstance()->cameraMode){
 		case CameraModes::free:
