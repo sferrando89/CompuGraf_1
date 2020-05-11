@@ -370,222 +370,82 @@ void renderMap()
 void renderPlayer()
 {
 	Player* player = GameManager::GetInstance()->getPlayer();
+	Map* map = GameManager::GetInstance()->getGameMap();
 
 	int currX = player->currentPosition.x;
 	int currY = player->currentPosition.y;
 
 	int oldX = player->oldPosition.x;
 	int oldY = player->oldPosition.y;
-
+/*
+	std::vector<Vector3> mesh_body = player->model.mesh_body;
+	std::vector<Vector3> mesh_nose = player->model.mesh_nose;
+	std::vector<Vector3> mesh_left_eye = player->model.mesh_left_eye;
+	std::vector<Vector3> mesh_right_eye = player->model.mesh_right_eye;
+	std::vector<Vector3> mesh_left_foot = player->model.mesh_left_foot;
+	std::vector<Vector3> mesh_right_foot = player->model.mesh_right_foot;
+*/
 	if (player->isMoving) {
+		
+		
 		float distanceDone = player->percentageTraveled;
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glBegin(GL_QUADS);
-		glColor3f(1, 1, 1);
-		//UP
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
 
-		//DOWN
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
+		float traveledY = ((currY - oldY) * distanceDone);
+		float traveledX = ((currX - oldX) * distanceDone);
+		float traveledZ;
+		
+		if (map->GetCubeHeight(currX, currY) == map->GetCubeHeight(oldX, oldY))
+			traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone);
+		else if (map->GetCubeHeight(currX, currY) > map->GetCubeHeight(oldX, oldY))
+			traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) - 1;
+		else
+			traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) + 1;
+
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+		glPushMatrix();
+
+		glTranslatef(oldX + traveledX + 0.5, oldY + traveledY + 0.5, traveledZ);
 
 		if (player->direction == Direction::up)
-			glColor3f(0, 1, 0);
-
-		//FRONT
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		glColor3f(1, 1, 1);
-
-		if (player->direction == Direction::right)
-			glColor3f(0, 1, 0);
-
-
-		//LEFT
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		glColor3f(1, 1, 1);
-
-		if (player->direction == Direction::left)
-			glColor3f(0, 1, 0);
-
-		//RIGHT
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		glColor3f(1, 1, 1);
+			glRotatef(90, 0, 0, 1);
 
 		if (player->direction == Direction::down)
-			glColor3f(0, 1, 0);
+			glRotatef(-90, 0, 0, 1);
 
-		//BACK
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
+		if (player->direction == Direction::left)
+			glRotatef(180, 0, 0, 1);
 
-		glEnd();
+		glTranslatef(-0.5, -0.5, 0);
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glBegin(GL_QUADS);
+		player->draw();
 
-		glColor3f(0, 0, 0);
+		glPopMatrix();
 
-		//UP
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		//DOWN
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		//FRONT
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		//LEFT
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		//RIGHT
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		//BACK
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-		glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-		glEnd();
 	}
 	else {
+
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		glBegin(GL_QUADS);
-		glColor3f(1, 1, 1);
 
-		//UP
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-
-		//DOWN
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-
+		glPushMatrix();
+		
+		glTranslatef(currX + 0.5, currY + 0.5, 0);
+		
 		if (player->direction == Direction::up)
-			glColor3f(0, 1, 0);
-
-		//FRONT
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-
-		glColor3f(1, 1, 1);
-
-		if (player->direction == Direction::right)
-			glColor3f(0, 1, 0);
-
-
-		//LEFT
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-
-		glColor3f(1, 1, 1);
-
-		if (player->direction == Direction::left)
-			glColor3f(0, 1, 0);
-
-		//RIGHT
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-
-		glColor3f(1, 1, 1);
+			glRotatef(90, 0, 0, 1);
 
 		if (player->direction == Direction::down)
-			glColor3f(0, 1, 0);
+			glRotatef(-90, 0, 0, 1);
 
-		//BACK
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
+		if (player->direction == Direction::left)
+			glRotatef(180, 0, 0, 1);
+				
+		glTranslatef(-0.5, -0.5, 0);
 
-		glEnd();
+		player->draw();
+		
+		glPopMatrix();
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glBegin(GL_QUADS);
-
-		glColor3f(0, 0, 0);
-
-		//UP
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-
-		//DOWN
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-
-		//FRONT
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-
-		//LEFT
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-
-		//RIGHT
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-
-		//BACK
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-		glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-		glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-
-		glEnd();
 	}
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
@@ -594,223 +454,79 @@ void renderEnemy()
 {
 	list<Ficha*>* enemy = GameManager::GetInstance()->getEnemies();
 	list<Ficha*>::iterator iterEnemy;
-	for (iterEnemy = enemy->begin(); iterEnemy != enemy->end(); ++iterEnemy) {
+
+	for (iterEnemy = enemy->begin(); iterEnemy != enemy->end(); ++iterEnemy) 
+	{
 		int currX = (*iterEnemy)->currentPosition.x;
 		int currY = (*iterEnemy)->currentPosition.y;
 
 		int oldX = (*iterEnemy)->oldPosition.x;
 		int oldY = (*iterEnemy)->oldPosition.y;
+
 		if ((*iterEnemy)->isMoving) {
+
 			float distanceDone = (*iterEnemy)->percentageTraveled;
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glBegin(GL_QUADS);
-			glColor3f(1, 1, 1);
-			//UP
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
+			float traveledY = ((currY - oldY) * distanceDone);
+			float traveledX = ((currX - oldX) * distanceDone);
+			float traveledZ;
 
-			//DOWN
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
+			if (map->GetCubeHeight(currX, currY) == map->GetCubeHeight(oldX, oldY))
+				traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone);
+			else if (map->GetCubeHeight(currX, currY) > map->GetCubeHeight(oldX, oldY))
+				traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) - 1;
+			else
+				traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) + 1;
+
+
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+			glPushMatrix();
+
+			glTranslatef(oldX + traveledX + 0.5, oldY + traveledY + 0.5, traveledZ);
 
 			if ((*iterEnemy)->direction == Direction::up)
-				glColor3f(0, 1, 0);
-
-			//FRONT
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			glColor3f(1, 1, 1);
-
-			if ((*iterEnemy)->direction == Direction::right)
-				glColor3f(0, 1, 0);
-
-
-			//LEFT
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			glColor3f(1, 1, 1);
-
-			if ((*iterEnemy)->direction == Direction::left)
-				glColor3f(0, 1, 0);
-
-			//RIGHT
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			glColor3f(1, 1, 1);
+				glRotatef(90, 0, 0, 1);
 
 			if ((*iterEnemy)->direction == Direction::down)
-				glColor3f(0, 1, 0);
+				glRotatef(-90, 0, 0, 1);
 
-			//BACK
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
+			if ((*iterEnemy)->direction == Direction::left)
+				glRotatef(180, 0, 0, 1);
 
-			glEnd();
+			glTranslatef(-0.5, -0.5, 0);
 
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glBegin(GL_QUADS);
+			dynamic_cast<Enemy*>(*iterEnemy)->draw();
 
-			glColor3f(0, 0, 0);
+			glPopMatrix();
 
-			//UP
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			//DOWN
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			//FRONT
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			//LEFT
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			//RIGHT
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			//BACK
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + 1 + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-			glVertex3f(oldX + 1 + ((currX - oldX) * distanceDone), oldY + 1 + ((currY - oldY) * distanceDone), map->GetCubeHeight(oldX, oldY) + ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone));
-
-			glEnd();
 		}
-		else {
+		else 
+		{
+
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-			glBegin(GL_QUADS);
-			glColor3f(1, 1, 1);
 
-			//UP
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
+			glPushMatrix();
 
-			//DOWN
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
+			glTranslatef(currX + 0.5, currY + 0.5, 0);
 
 			if ((*iterEnemy)->direction == Direction::up)
-				glColor3f(0, 1, 0);
-
-			//FRONT
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-
-			glColor3f(1, 1, 1);
-
-			if ((*iterEnemy)->direction == Direction::right)
-				glColor3f(0, 1, 0);
-
-
-			//LEFT
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-
-			glColor3f(1, 1, 1);
-
-			if ((*iterEnemy)->direction == Direction::left)
-				glColor3f(0, 1, 0);
-
-			//RIGHT
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-
-			glColor3f(1, 1, 1);
+				glRotatef(90, 0, 0, 1);
 
 			if ((*iterEnemy)->direction == Direction::down)
-				glColor3f(0, 1, 0);
+				glRotatef(-90, 0, 0, 1);
 
-			//BACK
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
+			if ((*iterEnemy)->direction == Direction::left)
+				glRotatef(180, 0, 0, 1);
 
-			glEnd();
+			glTranslatef(-0.5, -0.5, 0);
 
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			glBegin(GL_QUADS);
+			dynamic_cast<Enemy*>(*iterEnemy)->draw();
 
-			glColor3f(0, 0, 0);
+			glPopMatrix();
 
-			//UP
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-
-			//DOWN
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-
-			//FRONT
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-
-			//LEFT
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX, currY, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-
-			//RIGHT
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY, map->GetCubeHeight(currX, currY) + 1);
-
-			//BACK
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY));
-			glVertex3f(currX, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY) + 1);
-			glVertex3f(currX + 1, currY + 1, map->GetCubeHeight(currX, currY));
-
-			glEnd();
 		}
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		
 	}
 }
 
@@ -959,72 +675,8 @@ int render()
 
 	renderMap();
 
-	//renderPlayer();
-	//renderEnemy();
-
-	/*
-	std::vector<Vector3> mesh_body = loadOBJ("models/Cuerpo.obj");
-	std::vector<Vector3> mesh_nose = loadOBJ("models/Nariz.obj");
-	std::vector<Vector3> mesh_left_eye = loadOBJ("models/Ojo_Izquierdo.obj");
-	std::vector<Vector3> mesh_right_eye = loadOBJ("models/Ojo_Derecho.obj");
-	std::vector<Vector3> mesh_left_foot = loadOBJ("models/Pie_Izquierdo.obj");
-	std::vector<Vector3> mesh_right_foot = loadOBJ("models/Pie_Derecho.obj");
-	*/
-	Player* player = GameManager::GetInstance()->getPlayer();
-
-
-	std::vector<Vector3> mesh_body = player->model.mesh_body;
-	std::vector<Vector3> mesh_nose = player->model.mesh_nose;
-	std::vector<Vector3> mesh_left_eye = player->model.mesh_left_eye;
-	std::vector<Vector3> mesh_right_eye = player->model.mesh_right_eye;
-	std::vector<Vector3> mesh_left_foot = player->model.mesh_left_foot;
-	std::vector<Vector3> mesh_right_foot = player->model.mesh_right_foot;
-	
-
-	glPushMatrix();
-
-	//glRotatef(90, 0, 0, 0);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glBegin(GL_TRIANGLES);
-	//Dibujo cuerpo
-	glColor3f(1, 1, 0);
-	for (int j = 0; j < mesh_body.size(); j++)
-	{
-		glVertex3f(mesh_body[j].getX(), mesh_body[j].getY(), mesh_body[j].getZ() + 1);
-	}
-	//Dibujo Nariz
-	glColor3f(0, 1, 1);
-	for (int j = 0; j < mesh_nose.size(); j++)
-	{
-		glVertex3f(mesh_nose[j].getX(), mesh_nose[j].getY(), mesh_nose[j].getZ() +1);
-	}
-	//Dibujo Ojo Izquierdo
-	glColor3f(1, 0, 0);
-	for (int j = 0; j < mesh_left_eye.size(); j++)
-	{
-		glVertex3f(mesh_left_eye[j].getX(), mesh_left_eye[j].getY(), mesh_left_eye[j].getZ()+1);
-	}
-	//Dibujo Ojo Derecho
-	glColor3f(1, 0, 0);
-	for (int j = 0; j < mesh_right_eye.size(); j++)
-	{
-		glVertex3f(mesh_right_eye[j].getX(), mesh_right_eye[j].getY(), mesh_right_eye[j].getZ()+1);
-	}
-	//Dibujo Pie Izquierdo
-	glColor3f(1, 0, 0);
-	for (int j = 0; j < mesh_left_foot.size(); j++)
-	{
-		glVertex3f(mesh_left_foot[j].getX(), mesh_left_foot[j].getY(), mesh_left_foot[j].getZ()+1);
-	}
-	//Dibjo Pie Derecho
-	glColor3f(1, 0, 0);
-	for (int j = 0; j < mesh_right_foot.size(); j++)
-	{
-		glVertex3f(mesh_right_foot[j].getX(), mesh_right_foot[j].getY(), mesh_right_foot[j].getZ()+1);
-	}	
-	glEnd();
-
-	glPopMatrix();
+	renderPlayer();
+	renderEnemy();
 
 	//Dibujado de objetos 2D (HUD)
 	glMatrixMode(GL_PROJECTION);

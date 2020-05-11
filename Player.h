@@ -17,10 +17,11 @@ class Player : public Ficha
 {
 	private:
 		static Player* instance;
+		qbert model;
 		Player(Vector3 position, Direction init_direction);
 
 	public:
 		static Player* GetInstance();
-		static Player* GetInstance(Vector3 position, Direction init_direction);
-		qbert model;
+		static Player* GetInstance(Vector3 position, Direction init_direction);		
+		void draw();
 };

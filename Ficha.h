@@ -17,9 +17,12 @@ class Ficha
 		Vector3 oldPosition;
 
 		float percentageTraveled;
+
 		Direction direction;
+		Direction oldDirection;
+
 		bool isMoving;
 
-		void startMoving(Vector3 nuevaPos);
+		void startMoving(Vector3 nuevaPos, Direction newDirection);
 		void updateTokenLogicalPosition();
 };

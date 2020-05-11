@@ -3,11 +3,13 @@
 
 Ficha::~Ficha() {}
 
-void Ficha::startMoving(Vector3 nuevaPos) {
+void Ficha::startMoving(Vector3 nuevaPos , Direction newDirection) {
 	isMoving = true;
 	percentageTraveled = 0;
 	oldPosition = currentPosition;
+	oldDirection = direction;
 	currentPosition = nuevaPos;
+	direction = newDirection;
 }
 
 void Ficha::updateTokenLogicalPosition() {
