@@ -13,10 +13,10 @@ class Map
 {
 private:
 	static Map* instance;
-	Map(int m, int n, vector<vector<int>> init);
+	Map(int m, int n, vector<vector<int>> init, float isoSize, float isoOffset, float fOffset);
 public:
 	static Map* GetInstance();
-	static Map* GetInstance(int m, int n, vector<vector<int>> init);
+	static Map* GetInstance(int m, int n, vector<vector<int>> init, float isoSize, float isoOffset, float fOffset);
 	int size_m, size_n;
 	std::vector < std::vector <cube>> matrix; // Cambiar el struct cube por la clase cubo
 
@@ -25,7 +25,7 @@ public:
 	float freeOffset;
 
 	Map();
-	Map(int m, int n, vector<vector<int>> init, float isoSize, float isoOffset, float fOffset);
+	//Map(int m, int n, vector<vector<int>> init, float isoSize, float isoOffset, float fOffset);
 	int GetCubeHeight(int i, int j);
 
 	bool PaintCube(int i, int j);

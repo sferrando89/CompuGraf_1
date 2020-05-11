@@ -344,7 +344,7 @@ void updateCamera3d()
 
 	if (Settings::GetInstance()->cameraMode == CameraModes::isometric)
 	{
-		float size = GameManager::GetInstance()->getGameMap().isometricSize;;
+		float size = GameManager::GetInstance()->getGameMap()->isometricSize;;
 		glOrtho(-SCREEN_WIDTH / size,
 			SCREEN_WIDTH / size,
 			-SCREEN_HEIGHT / size,

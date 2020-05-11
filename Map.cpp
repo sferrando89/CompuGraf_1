@@ -3,9 +3,9 @@
 
 Map* Map::instance = NULL;
 
-Map* Map::GetInstance(int m, int n, vector<vector<int>> init) {
+Map* Map::GetInstance(int m, int n, vector<vector<int>> init,float isoSize, float isoOffset, float fOffset) {
 	if (!instance) {
-		instance = new Map(m, n, init);
+		instance = new Map(m, n, init, isoSize, isoOffset, fOffset);
 	}
 	return instance;
 }

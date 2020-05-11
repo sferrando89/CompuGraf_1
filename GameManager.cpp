@@ -22,8 +22,8 @@ GameManager::GameManager()
 {
 	//HARDCODEADO EL MAPA PRINCIPAL
 	// Piramide
-	/*
-	gameMap = Map(8, 8, {
+	
+	gameMap = Map::GetInstance(8, 8, {
 		{8,7,6,5,4,3,2,1,0},
 		{7,6,5,4,3,2,1,0,0},
 		{6,5,4,3,2,1,0,0,0},
@@ -36,11 +36,11 @@ GameManager::GameManager()
 		5.5,
 		5);
 
-	*/
+	
 
 	// Plano
-
-	gameMap = Map(8, 8, {
+	/*
+	gameMap = Map::GetInstance(8, 8, {
 		{1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1},
 		{1,1,1,1,1,1,1,1,1},
@@ -52,7 +52,7 @@ GameManager::GameManager()
 		90,
 		1,
 		5);
-
+		*/
 	
 
 	//Player player(0,0,0,Direction_x::left, Direction_y::down);
