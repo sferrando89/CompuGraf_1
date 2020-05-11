@@ -36,7 +36,7 @@ Settings::Settings()
 	varValues[3] = true;
 	settingSelected = 1;
 
-	cameraMode = CameraModes::firstPerson;
+	cameraMode = CameraModes::isometric;
 }
 
 void Settings::HandleMovement(SDL_Keycode key)

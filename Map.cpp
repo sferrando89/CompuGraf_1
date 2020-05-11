@@ -9,7 +9,7 @@ Map::Map()
 
 }
 
-Map :: Map(int m, int n, vector<vector<int>> init)
+Map :: Map(int m, int n, vector<vector<int>> init,float isoSize, float isoOffset, float fOffset)
 {
 	size_m = m;
 	size_n = n;
@@ -19,6 +19,10 @@ Map :: Map(int m, int n, vector<vector<int>> init)
 			matrix[i][j].h = init[i][j];
 		}
 	}
+
+	isometricSize = isoSize;
+	isometricOffset = isoOffset;
+	freeOffset = fOffset;
 }
 
 int Map::GetCubeHeight(int i, int j) {

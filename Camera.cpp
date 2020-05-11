@@ -95,9 +95,10 @@ void Camera::apply()
 {
 	
 	glLoadIdentity();
-	float offset = 5;
+	float offset = 2;
 	int offsetX =0;
 	int offsetY =0;
+	float offsetZ = 5;
 	
 	float eyePositionX = 0;
 	float eyePositionY = 0;
@@ -107,12 +108,12 @@ void Camera::apply()
 
 	switch(Settings::GetInstance()->cameraMode){
 		case CameraModes::free:
-			gluLookAt(	x,
-						y,
-						z,
+			gluLookAt(	x + GameManager::GetInstance()->getGameMap().freeOffset,
+						y + GameManager::GetInstance()->getGameMap().freeOffset,
+						z ,
 						mapCenter.getX(), 
 						mapCenter.getY(), 
-						mapCenter.getZ(), 
+						mapCenter.getZ() , 
 						0, 0, 1);
 			break;
 		case CameraModes::firstPerson:
@@ -133,25 +134,25 @@ void Camera::apply()
 
 			}
 
-			eyePositionX = player->currentPosition.x + offset*offsetX;
-			eyePositionY = player->currentPosition.y + offset*offsetY;
-			eyePositionZ = player->currentPosition.z + offset;
+			eyePositionX = player->currentPosition.x + (offset )*offsetX + 0.5;
+			eyePositionY = player->currentPosition.y + (offset )*offsetY + 0.5;
+			eyePositionZ = GameManager::GetInstance()->getGameMap().GetCubeHeight(player->currentPosition.x, player->currentPosition.y) + offsetZ;
 
 			gluLookAt( 	eyePositionX,
 					   	eyePositionY,
 					   	eyePositionZ,
-						player->currentPosition.x,
-						player->currentPosition.y,
-						player->currentPosition.z,
+						player->currentPosition.x + 0.5,
+						player->currentPosition.y + 0.5,
+						player->currentPosition.z + 0.5,
 						0, 0, 1);
 			break;
 		case CameraModes::isometric:
-			gluLookAt(	S_RADIO,
-						S_RADIO,
-						S_RADIO,
+			gluLookAt(	S_RADIO ,
+						S_RADIO ,
+						S_RADIO ,
 						mapCenter.getX(),
 						mapCenter.getY(),
-						mapCenter.getZ(),
+						mapCenter.getZ() + GameManager::GetInstance()->getGameMap().isometricOffset,
 						0, 0, 1);
 			break;
 	}

@@ -19,6 +19,9 @@ SDL_Surface* sFont;
 GLuint textTexture;
 GLuint* settingsTextTexturesFixed;
 
+SDL_Surface* sScore;
+GLuint scoreTexture;
+
 
 bool firstdraw = false;
 int renderedFrames = 0;
@@ -142,6 +145,9 @@ bool initTextTexture() {
 
 		glBindTexture(GL_TEXTURE_2D, NULL); // Desbindeo
 	}
+	
+	//Textura del puntaje
+	glGenTextures(1, &scoreTexture);
 
 	// "Desbindeo" 
 	//glBindTexture(GL_TEXTURE_2D, NULL);
@@ -247,7 +253,28 @@ void updateCamera2d()
 
 void updateCamera3d()
 {
-	if (InputHandler::GetInstance()->mousePressed)
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	if (Settings::GetInstance()->cameraMode == CameraModes::isometric)
+	{
+		float size = GameManager::GetInstance()->getGameMap().isometricSize;;
+		glOrtho(-SCREEN_WIDTH / size,
+			SCREEN_WIDTH / size,
+			-SCREEN_HEIGHT / size,
+			SCREEN_HEIGHT / size,
+			-100, 100);
+	}
+	else
+	{
+		gluPerspective(800, SCREEN_WIDTH / SCREEN_HEIGHT, 0.8, 100);
+	}
+	
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	if (InputHandler::GetInstance()->mousePressed 
+		&& Settings::GetInstance()->cameraMode == CameraModes::free)
 	{
 		Camera::GetInstance()->Rotate(InputHandler::GetInstance()->dir_t,
 			InputHandler::GetInstance()->dir_p);
@@ -730,15 +757,18 @@ int render()
 
 	//Dibujado de objetos 3D
 	
+	/*
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
+	int size = 90;
+	glOrtho(-SCREEN_WIDTH/size, SCREEN_WIDTH/size,  -SCREEN_HEIGHT/size, SCREEN_HEIGHT / size, -1, 100);
 
-	gluPerspective(800, SCREEN_WIDTH / SCREEN_HEIGHT, 0.8, 100);
+	//gluPerspective(800, SCREEN_WIDTH / SCREEN_HEIGHT, 0.8, 100);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
+	*/
 	updateCamera3d();
-	
+
 	renderMap();
 	
 	renderPlayer();
