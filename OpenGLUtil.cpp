@@ -494,7 +494,9 @@ void renderPlayer()
 		else
 			traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) + 1;
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		if (!settings->varValues[1])
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		
 
 		glPushMatrix();
 
@@ -518,7 +520,8 @@ void renderPlayer()
 	}
 	else {
 
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		if (!settings->varValues[1])
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		glPushMatrix();
 		
@@ -540,7 +543,7 @@ void renderPlayer()
 		glPopMatrix();
 
 	}
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	
 }
 
 void renderEnemy()
@@ -571,8 +574,8 @@ void renderEnemy()
 			else
 				traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) + 1;
 
-
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			if (!settings->varValues[1])
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			glPushMatrix();
 
@@ -597,7 +600,8 @@ void renderEnemy()
 		else 
 		{
 
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			if (!settings->varValues[1])
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 			glPushMatrix();
 
@@ -618,8 +622,7 @@ void renderEnemy()
 
 			glPopMatrix();
 
-		}
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		}		
 		
 	}
 }
