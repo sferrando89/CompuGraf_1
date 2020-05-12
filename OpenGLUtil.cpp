@@ -770,6 +770,7 @@ void setTimeTexture(Uint32 newTime)
 	temp_str << (newTime);
 	std::string str = temp_str.str();
 	const char* cstr2 = str.c_str();
+
 	sTime = TTF_RenderText_Solid(font, cstr2, color);
 
 	SDL_Surface* intermediary = SDL_CreateRGBSurface(0, sTime->w, sTime->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
@@ -785,6 +786,7 @@ void setTimeTexture(Uint32 newTime)
 
 	glBindTexture(GL_TEXTURE_2D, NULL);
 	SDL_FreeSurface(intermediary);
+	SDL_FreeSurface(sTime);
 }
 
 void renderHud()
