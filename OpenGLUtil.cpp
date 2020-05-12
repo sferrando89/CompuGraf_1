@@ -6,6 +6,7 @@
 #include <iostream> 
 #include <string>
 #include <sstream>
+#include "SDL_image.h"
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -15,6 +16,11 @@ SDL_Surface* gScreenSurface = NULL;
 
 //OpenGL context
 SDL_GLContext gContext;
+
+// Background related
+SDL_Surface* backgrund;
+GLuint backgroundTexture;
+float rotationAngle = 0;
 
 // Text related
 struct _text {
@@ -215,6 +221,51 @@ bool initTextTexture() {
 	return true;
 }
 
+bool initBackgroundTexture()
+{
+	SDL_Surface* loadedSurface = IMG_Load("textures/background.png");
+	if (loadedSurface == NULL)
+	{
+		cout << "no cargo la textura\n";
+	}
+
+	intermediary = SDL_CreateRGBSurface(0, loadedSurface->w, loadedSurface->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	SDL_BlitSurface(loadedSurface, 0, intermediary, 0);
+
+	glGenTextures(1, &backgroundTexture);
+
+	// Bindeo la textura para poder usarla en el draw
+	// "Paso" la surface con la textura de texto a la de opengl
+	glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+	GLenum error = glGetError();
+	if (error != GL_NO_ERROR) {
+		//printf("Error en el bindtexture dentro del init del fondo\n");
+		//printf((const char*)error);
+		return false;
+	}
+
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+		GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+
+	error = glGetError();
+	if (error != GL_NO_ERROR) {
+		// ESTO DE ACA ABAJO ME ROMPIA EL NSIGHT ANDA A SABER POR QUE
+		//printf("Error en el TexImage dentro del initTextTexture \n");
+		//printf((const char*)error);
+		//return false;
+	}
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	SDL_FreeSurface(intermediary);
+	SDL_FreeSurface(loadedSurface);
+	glBindTexture(GL_TEXTURE_2D, NULL);
+
+	return true;
+}
 
 void updateHudTextTexture(string tiempo) {
 
@@ -322,6 +373,7 @@ bool initGL() {
 		return false;
 	}
 
+
 	return true;
 }
 
@@ -370,6 +422,12 @@ bool initSDL()
 	if (!initTextTexture())
 	{
 		printf("Unable to initialize TextTexture!\n");
+		return(false);
+	}
+
+	if (!initBackgroundTexture())
+	{
+		printf("Unable to initialize BAckgroundTExture!\n");
 		return(false);
 	}
 
@@ -896,23 +954,70 @@ void renderSettings()
 	}
 }
 
+void renderBackground()
+{
+
+	glBindTexture(GL_TEXTURE_2D, backgroundTexture);
+	glEnable(GL_TEXTURE_2D);
+	int z = 1;
+
+	//glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &w);
+	//glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &h);
+
+	glColor3f(1.0, 1.0, 1.0);
+	glBegin(GL_QUADS);
+	glTexCoord2f(0, 0); glVertex3f(0, 0, z);
+	glTexCoord2f(1, 0); glVertex3f(1200, 0, z);
+	glTexCoord2f(1, 1); glVertex3f(1200, 1200, z);
+	glTexCoord2f(0, 1); glVertex3f(0, 1200, z);
+	glEnd();
+
+	// "Desbindeo"
+	glBindTexture(GL_TEXTURE_2D, NULL);
+
+	glDisable(GL_TEXTURE_2D);
+
+}
+
 int render()
 {
 	//Clean Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//Dibujado de objetos 3D
-	
-	/*
+	//Dibujado del fondo
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	int size = 90;
-	glOrtho(-SCREEN_WIDTH/size, SCREEN_WIDTH/size,  -SCREEN_HEIGHT/size, SCREEN_HEIGHT / size, -1, 100);
+	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 10000);
 
-	//gluPerspective(800, SCREEN_WIDTH / SCREEN_HEIGHT, 0.8, 100);
+	glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	*/
+	
+	// Traslado el objeto al 0,0
+	glTranslatef(400,
+		400,
+		0);
+		
+	// Lo roto
+	rotationAngle += 0.1;
+	glRotatef(rotationAngle,
+		0,
+		0,
+		1);
+	
+	// Traslado el objeto para que quede centrado en la pantalla
+	glTranslatef(-600,
+		-600,
+		0);
+		
+	renderBackground();
+	
+
+	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
+
+
+	//Dibujado de objetos 3D
 	updateCamera3d();
 
 	renderMap();
@@ -923,11 +1028,10 @@ int render()
 	//Dibujado de objetos 2D (HUD)
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 1);
+	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 100000);
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
 	// Desactivo el depth_test para que el hud se dibuje por delante
 	glDisable(GL_DEPTH_TEST);
 
@@ -941,6 +1045,9 @@ int render()
 	}
 
 	glEnable(GL_DEPTH_TEST);
+
+
+
 	//Update screen
 	SDL_GL_SwapWindow(gWindow);
 

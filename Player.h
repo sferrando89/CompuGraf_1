@@ -11,6 +11,7 @@ struct qbert {
 	std::vector<Vector3> mesh_right_eye = loadOBJ("models/Ojo_Derecho.obj");
 	std::vector<Vector3> mesh_left_foot = loadOBJ("models/Pie_Izquierdo.obj");
 	std::vector<Vector3> mesh_right_foot = loadOBJ("models/Pie_Derecho.obj");
+	std::vector<Vector3> mesh_baloon = loadOBJ("models/Globo.obj");
 };
 
 class Player : public Ficha
