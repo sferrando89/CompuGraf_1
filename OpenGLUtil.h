@@ -6,6 +6,7 @@
 #include <gl\GLU.h>
 #include <stdio.h>
 #include "Vector3.h"
+#include "ScoreKeeper.h"
 
 //Screen Constants
 const int SCREEN_WIDTH = 800;
@@ -71,3 +72,5 @@ void renderPlayer();
 void renderEnemy();
 
 Uint32 getAvgFrames();
+
+void setScoreTExture(int newScore);

@@ -38,6 +38,7 @@ bool Map::PaintCube(int i, int j){
 	if (matrix[i][j].painted) {
 		return false;
 	}
+	ScoreKeeper::GetInstance()->increaseScore();
 	matrix[i][j].painted = true;
 	return true;
 }

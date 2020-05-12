@@ -151,6 +151,7 @@
     <ClCompile Include="OpenGLUtil.cpp" />
     <ClCompile Include="Ficha.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="ScoreKeeper.cpp" />
     <ClCompile Include="Settings.cpp" />
     <ClCompile Include="Direction.cpp" />
     <ClCompile Include="Vector3.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="OpenGLUtil.h" />
     <ClInclude Include="Ficha.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="ScoreKeeper.h" />
     <ClInclude Include="Settings.h" />
     <ClInclude Include="Vector3.h" />
   </ItemGroup>

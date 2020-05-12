@@ -2,6 +2,7 @@
 #include <vector>
 #include "Direction.h"
 #include "Vector3.h"
+#include "ScoreKeeper.h"
 using namespace std;
 
 struct cube {

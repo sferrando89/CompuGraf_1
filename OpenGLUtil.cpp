@@ -4,7 +4,8 @@
 #include "Settings.h"
 #include "OBJLoader.h"
 #include <iostream> 
-#include <string> 
+#include <string>
+#include <sstream>
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -31,6 +32,10 @@ GLuint* settingsTextTexturesFixed;
 
 SDL_Surface* sScore;
 GLuint scoreTexture;
+SDL_Surface* sTime;
+GLuint timeTexture;
+
+int actualScore = 0;
 
 GLuint* hudTextTexturesFixed = NULL;
 _text* hudDynamicText = NULL;
@@ -159,10 +164,53 @@ bool initTextTexture() {
 	}
 	
 	//Textura del puntaje
+
+	color = { 255, 179, 0};
+	std::stringstream temp_str;
+	temp_str << (ScoreKeeper::GetInstance()->getScore());
+	std::string str = temp_str.str();
+	const char* cstr2 = str.c_str();
+	sScore = TTF_RenderText_Solid(font, cstr2, color);
+
+	intermediary = SDL_CreateRGBSurface(0, sScore->w, sScore->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	SDL_BlitSurface(sScore, 0, intermediary, 0);
+
 	glGenTextures(1, &scoreTexture);
+	glBindTexture(GL_TEXTURE_2D, scoreTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+		GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	SDL_FreeSurface(intermediary);
 
 	// "Desbindeo" 
 	//glBindTexture(GL_TEXTURE_2D, NULL);
+
+	// Textura del tiempo
+	color = { 179, 255, 0 };
+	temp_str << (GameManager::GetInstance()->getPlayTime());
+	str = temp_str.str();
+	cstr2 = str.c_str();
+	sTime = TTF_RenderText_Solid(font, cstr2, color);
+
+	intermediary = SDL_CreateRGBSurface(0, sTime->w, sTime->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	SDL_BlitSurface(sTime, 0, intermediary, 0);
+
+	glGenTextures(1, &timeTexture);
+	glBindTexture(GL_TEXTURE_2D, timeTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+		GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	SDL_FreeSurface(intermediary);
 
 	return true;
 }
@@ -661,7 +709,7 @@ void renderTextTexture(GLuint texture, int x, int y)
 	int w = 0;
 	int h = 0;
 
-	//glEnable(GL_BLEND);
+	glEnable(GL_BLEND);
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 	glDisable(GL_DEPTH_TEST);
@@ -684,18 +732,63 @@ void renderTextTexture(GLuint texture, int x, int y)
 	// "Desbindeo"
 	glBindTexture(GL_TEXTURE_2D, NULL);
 
-	//glDisable(GL_BLEND);
+	glDisable(GL_BLEND);
 	glDisable(GL_TEXTURE_2D);
 	glEnable(GL_DEPTH_TEST);
 }
 
+void setScoreTexture(int newScore)
+{
+	SDL_Color color = { 255, 179, 0};
+
+	std::stringstream temp_str;
+	temp_str << (newScore);
+	std::string str = temp_str.str();
+	const char* cstr2 = str.c_str();
+	sScore = TTF_RenderText_Solid(font, cstr2, color);
+
+	SDL_Surface* intermediary = SDL_CreateRGBSurface(0, sScore->w, sScore->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	SDL_BlitSurface(sScore, 0, intermediary, 0);
+
+	glBindTexture(GL_TEXTURE_2D, scoreTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+		GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	SDL_FreeSurface(intermediary);
+}
+
+void setTimeTexture(Uint32 newTime)
+{
+	SDL_Color color = { 179, 255, 0};
+
+	std::stringstream temp_str;
+	temp_str << (newTime);
+	std::string str = temp_str.str();
+	const char* cstr2 = str.c_str();
+	sTime = TTF_RenderText_Solid(font, cstr2, color);
+
+	SDL_Surface* intermediary = SDL_CreateRGBSurface(0, sTime->w, sTime->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+
+	SDL_BlitSurface(sTime, 0, intermediary, 0);
+
+	glBindTexture(GL_TEXTURE_2D, timeTexture);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+		GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	glBindTexture(GL_TEXTURE_2D, NULL);
+	SDL_FreeSurface(intermediary);
+}
+
 void renderHud()
 {
-	//INTENTO QUE ESCRIBE EN PANTALLA PERO DEJA MEMORIA COLGADA
-	/*Uint32 a = gamemanager->getPlayTime();
-	updateHudTextTexture(std::to_string(a/1000));
-	renderTextTexture(hudTextTexturesFixed[0], 30, 0);*/
-
 	float z = 0.5;
 
 	glColor3f(1.0f, 0.0f, 0.0);
@@ -706,9 +799,19 @@ void renderHud()
 	glVertex3f(10.0, 100.0, z);
 	glVertex3f(100.0, 100.0, z);
 	glVertex3f(100.0, 10.0, z);
-
+	
 
 	glEnd();
+	
+	if (actualScore != ScoreKeeper::GetInstance()->getScore())
+	{
+		setScoreTexture(ScoreKeeper::GetInstance()->getScore());
+	}
+
+	renderTextTexture(scoreTexture, SCREEN_WIDTH - 40 , 10);
+
+	setTimeTexture(floor(GameManager::GetInstance()->getPlayTime()/1000));
+	renderTextTexture(timeTexture, SCREEN_WIDTH/2, 10);
 }
 
 void renderSettings()
