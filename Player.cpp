@@ -33,7 +33,6 @@ Player::Player(Vector3 position, Direction init_direction)
 	model.mesh_right_eye = loadOBJ("models/Ojo_Derecho.obj");
 	model.mesh_left_foot = loadOBJ("models/Pie_Izquierdo.obj");
 	model.mesh_right_foot = loadOBJ("models/Pie_Derecho.obj");
-	model.mesh_right_foot = loadOBJ("models/Globo.obj");
 }
 
 void Player::draw()
@@ -77,11 +76,5 @@ void Player::draw()
 		glVertex3f(model.mesh_right_foot[j].getX(), model.mesh_right_foot[j].getY(), model.mesh_right_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 
-	//Dibujo globo
-	glColor3f(1.0f, 1.0f, 1.0f);
-	for (int j = 0; j < model.mesh_baloon.size(); j++)
-	{
-		glVertex3f(model.mesh_baloon[j].getX(), model.mesh_baloon[j].getY(), model.mesh_baloon[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
-	}
 	glEnd();
 }
