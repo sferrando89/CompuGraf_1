@@ -1,3 +1,4 @@
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 #include "OpenGLUtil.h"
 #include "GameManager.h"
 #include "InputHandler.h"
@@ -7,7 +8,6 @@
 #ifdef main
 #undef main
 #endif
-
 
 using namespace std;
 
