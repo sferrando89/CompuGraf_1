@@ -281,19 +281,19 @@ bool GameManager::detectColision() {
 	for (iterEnemy = enemies->begin(); iterEnemy != enemies->end(); ++iterEnemy) {
 		if ((*iterEnemy)->currentPosition == player->currentPosition) {
 			if ((*iterEnemy)->isMoving && !player->isMoving) {
-				if ((*iterEnemy)->percentageTraveled > 0.50) {
+				if ((*iterEnemy)->percentageTraveled >= 0.49) {
 					cout << "DEAD 1" << endl;
 					return true;
 				}
 			}
 			else if (!(*iterEnemy)->isMoving && player->isMoving) {
-				if (player->percentageTraveled > 0.50) {
+				if (player->percentageTraveled >= 0.49) {
 					cout << "DEAD 2" << endl;
 					return true;
 				}
 			}
 			else if ((*iterEnemy)->isMoving && player->isMoving) {
-				if ((*iterEnemy)->percentageTraveled > 0.50 && player->percentageTraveled > 0.50) {
+				if ((*iterEnemy)->percentageTraveled >= 0.49 && player->percentageTraveled >= 0.49) {
 					cout << "DEAD 3" << endl;
 					return true;
 				}
