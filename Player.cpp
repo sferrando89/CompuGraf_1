@@ -43,36 +43,42 @@ void Player::draw()
 	glColor3f(1.0f, 0.9f, 0.0f);
 	for (int j = 0; j < model.mesh_body.size(); j++)
 	{
+		glNormal3f(model.mesh_body[j].getX(), model.mesh_body[j].getY(), model.mesh_body[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_body[j].getX(), model.mesh_body[j].getY(), model.mesh_body[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	//Dibujo Nariz
 	glColor3f(0.4f, 0.0f, 0.7f);
 	for (int j = 0; j < model.mesh_nose.size(); j++)
 	{
+		glNormal3f(model.mesh_nose[j].getX(), model.mesh_nose[j].getY(), model.mesh_nose[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_nose[j].getX(), model.mesh_nose[j].getY(), model.mesh_nose[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	//Dibujo Ojo Izquierdo
 	glColor3f(0.0f, 0.5f, 1.0f);
 	for (int j = 0; j < model.mesh_left_eye.size(); j++)
 	{
+		glNormal3f(model.mesh_left_eye[j].getX(), model.mesh_left_eye[j].getY(), model.mesh_left_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_left_eye[j].getX(), model.mesh_left_eye[j].getY(), model.mesh_left_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	//Dibujo Ojo Derecho
 	glColor3f(0.0f, 0.5f, 1.0f);
 	for (int j = 0; j < model.mesh_right_eye.size(); j++)
 	{
+		glNormal3f(model.mesh_right_eye[j].getX(), model.mesh_right_eye[j].getY(), model.mesh_right_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_right_eye[j].getX(), model.mesh_right_eye[j].getY(), model.mesh_right_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	//Dibujo Pie Izquierdo
 	glColor3f(1.0f, 0.5f, 0.0f);
 	for (int j = 0; j < model.mesh_left_foot.size(); j++)
 	{
+		glNormal3f(model.mesh_left_foot[j].getX(), model.mesh_left_foot[j].getY(), model.mesh_left_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_left_foot[j].getX(), model.mesh_left_foot[j].getY(), model.mesh_left_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	//Dibjo Pie Derecho
 	glColor3f(1.0f, 0.5f, 0.0f);
 	for (int j = 0; j < model.mesh_right_foot.size(); j++)
 	{
+		glNormal3f(model.mesh_right_foot[j].getX(), model.mesh_right_foot[j].getY(), model.mesh_right_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_right_foot[j].getX(), model.mesh_right_foot[j].getY(), model.mesh_right_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 

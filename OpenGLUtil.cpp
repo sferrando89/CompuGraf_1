@@ -434,15 +434,6 @@ bool initSDL()
 	return true;
 }
 
-void update()
-{
-
-}
-
-void updateCamera2d()
-{
-}
-
 void updateCamera3d()
 {
 	glMatrixMode(GL_PROJECTION);
@@ -476,7 +467,6 @@ void updateCamera3d()
 		InputHandler::GetInstance()->dir_t = 0;
 		InputHandler::GetInstance()->dir_p = 0;
 
-
 	}
 	Camera::GetInstance()->apply();
 }
@@ -494,18 +484,6 @@ void renderMap()
 				if (!settings->varValues[1]) {
 					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 					glBegin(GL_QUADS);
-					glColor3f(1, 0, 0); // AZUL
-					//FRONT
-					glVertex3f(j, i, map->GetCubeHeight(j, i) - 1);
-					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
-					glVertex3f(j + 1, i, map->GetCubeHeight(j, i));
-					glVertex3f(j, i, map->GetCubeHeight(j, i));
-
-					//RIGHT
-					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
-					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
-					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i));
-					glVertex3f(j + 1, i, map->GetCubeHeight(j, i));
 
 					if (map->isCubePainted(j, i))
 						glColor3f(0, 0, 1);
@@ -513,30 +491,64 @@ void renderMap()
 						glColor3f(0, 1, 1);
 
 					//UP
+					glNormal3f(j, i, map->GetCubeHeight(j, i));
 					glVertex3f(j, i, map->GetCubeHeight(j, i));
+					glNormal3f(j + 1, i, map->GetCubeHeight(j, i));
 					glVertex3f(j + 1, i, map->GetCubeHeight(j, i));
+					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i));
+					glNormal3f(j, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i));
-
-					//DOWN
-					glColor3f(0, 1, 0);
-					glVertex3f(j, i, map->GetCubeHeight(j, i) - 1);
-					glVertex3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
-					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
-					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
 
 					glColor3f(1, 0, 0);
+					//FRONT
+					glNormal3f(j, i, map->GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j + 1, i, map->GetCubeHeight(j, i));
+					glVertex3f(j + 1, i, map->GetCubeHeight(j, i));
+					glNormal3f(j, i, map->GetCubeHeight(j, i));
+					glVertex3f(j, i, map->GetCubeHeight(j, i));
+
+					//RIGHT
+					glNormal3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i));
+					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i));
+					glNormal3f(j + 1, i, map->GetCubeHeight(j, i));
+					glVertex3f(j + 1, i, map->GetCubeHeight(j, i));					
+
+					//DOWN
+					glNormal3f(j, i, map->GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
+					glVertex3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
+					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
 
 					//LEFT
+					glNormal3f(j, i, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j, i, map->GetCubeHeight(j, i));
 					glVertex3f(j, i, map->GetCubeHeight(j, i));
+					glNormal3f(j, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i));
+					glNormal3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
 
 					//BACK
+					glNormal3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
+					glNormal3f(j, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i));
+					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i));
+					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
 
 					glEnd();

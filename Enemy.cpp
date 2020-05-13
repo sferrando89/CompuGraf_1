@@ -19,24 +19,28 @@ void Enemy::draw()
 	glColor3f(.1, .5, .7);
 	for (int j = 0; j < model.mesh_body.size(); j++)
 	{
+		glNormal3f(model.mesh_body[j].getX(), model.mesh_body[j].getY(), model.mesh_body[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_body[j].getX(), model.mesh_body[j].getY(), model.mesh_body[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	//Dibujo Gorro
 	glColor3f(.8, 0, .8);
 	for (int j = 0; j < model.mesh_cap.size(); j++)
 	{
+		glNormal3f(model.mesh_cap[j].getX(), model.mesh_cap[j].getY(), model.mesh_cap[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_cap[j].getX(), model.mesh_cap[j].getY(), model.mesh_cap[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	//Dibujo Ojo Izquierdo
 	glColor3f(1, 1, 1);
 	for (int j = 0; j < model.mesh_left_eye.size(); j++)
 	{
+		glNormal3f(model.mesh_left_eye[j].getX(), model.mesh_left_eye[j].getY(), model.mesh_left_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_left_eye[j].getX(), model.mesh_left_eye[j].getY(), model.mesh_left_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	//Dibujo Ojo Derecho
 	glColor3f(1, 1, 1);
 	for (int j = 0; j < model.mesh_right_eye.size(); j++)
 	{
+		glNormal3f(model.mesh_right_eye[j].getX(), model.mesh_right_eye[j].getY(), model.mesh_right_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_right_eye[j].getX(), model.mesh_right_eye[j].getY(), model.mesh_right_eye[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 	glEnd();
