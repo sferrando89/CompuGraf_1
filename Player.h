@@ -13,15 +13,22 @@ struct qbert {
 	std::vector<Vector3> mesh_right_foot = loadOBJ("models/Pie_Derecho.obj");
 };
 
+struct balloon {
+	std::vector<Vector3> mesh_balloon = loadOBJ("models/Globo.obj");
+	std::vector<Vector3> mesh_balloon_text = loadOBJ("models/Texto_globo.obj");
+};
+
 class Player : public Ficha
 {
 	private:
 		static Player* instance;
 		qbert model;
+		balloon balloonModel;
 		Player(Vector3 position, Direction init_direction);
 
 	public:
 		static Player* GetInstance();
 		static Player* GetInstance(Vector3 position, Direction init_direction);		
 		void draw();
+		void drawBalloon();
 };

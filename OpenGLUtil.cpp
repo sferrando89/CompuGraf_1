@@ -26,15 +26,23 @@ float rotationAngle = 0;
 struct _text {
 	const char* texto;
 	SDL_Color color;
+	TTF_Font* font;
 	/*~_text(){
 		delete[](texto);
 	}*/
 };
 SDL_Surface* intermediary = NULL;
 TTF_Font* font;
+TTF_Font* fontBig;
+TTF_Font* fontSmall;
 SDL_Surface* sFont = NULL;
 GLuint textTexture;
 GLuint* settingsTextTexturesFixed;
+SDL_Surface* sLoose;
+GLuint* looseTextTextures;
+SDL_Surface* sWin;
+GLuint* winTextTextures;
+
 
 SDL_Surface* sScore;
 GLuint scoreTexture;
@@ -71,6 +79,8 @@ bool initTextTexture() {
 		return false;
 	}
 	font = TTF_OpenFont("fonts/pixeldroidBoticRegular.ttf", 40);
+	fontSmall = TTF_OpenFont("fonts/pixeldroidBoticRegular.ttf", 20);
+	fontBig = TTF_OpenFont("fonts/pixeldroidBoticRegular.ttf", 80);
 	std::cout << TTF_GetError() << std::endl;
 
 	SDL_Color color;
@@ -138,27 +148,27 @@ bool initTextTexture() {
 	glGenTextures(n, settingsTextTexturesFixed);
 
 	_text* textos = new _text[n];
-	textos[0] = { "SETTINGS",		{255,0,0} };
-	textos[1] = { "Game speed:",	{0,0,255} };
-	textos[2] = { "Game speed:",	{0,255,255} };
-	textos[3] = { "Wireframe:",	{0,0,255} };
-	textos[4] = { "Wireframe:",	{0,255,255} };
-	textos[5] = { "Texturas:",	{0,0,255} };
-	textos[6] = { "Texturas:",	{0,255,255} };
-	textos[7] = { "Interpolado:",	{0,0,255} };
-	textos[8] = { "Interpolado:",	{0,255,255} };
-	textos[9] = { "ON",			{255, 255,255} };
-	textos[10] = { "ON",			{125, 125,125} };
-	textos[11] = { "OFF",			{255, 255,255} };
-	textos[12] = { "OFF",			{125, 125,125} };
-	textos[13] = { "Lento",		{255, 255,255} };
-	textos[14] = { "Lento",		{125, 125,125} };
-	textos[15] = { "Rapido",		{255, 255,255} };
-	textos[16] = { "Rapido",		{125, 125,125} };
+	textos[0] = { "SETTINGS",		{255,0,0} ,font};
+	textos[1] = { "Game speed:",	{0,0,255} ,font };
+	textos[2] = { "Game speed:",	{0,255,255} ,font };
+	textos[3] = { "Wireframe:",	{0,0,255} ,font };
+	textos[4] = { "Wireframe:",	{0,255,255} ,font };
+	textos[5] = { "Texturas:",	{0,0,255} ,font };
+	textos[6] = { "Texturas:",	{0,255,255} ,font };
+	textos[7] = { "Interpolado:",	{0,0,255} ,font };
+	textos[8] = { "Interpolado:",	{0,255,255} ,font };
+	textos[9] = { "ON",			{255, 255,255} ,font };
+	textos[10] = { "ON",			{125, 125,125} ,font };
+	textos[11] = { "OFF",			{255, 255,255} ,font };
+	textos[12] = { "OFF",			{125, 125,125} ,font };
+	textos[13] = { "Lento",		{255, 255,255} ,font };
+	textos[14] = { "Lento",		{125, 125,125} ,font };
+	textos[15] = { "Rapido",		{255, 255,255} ,font };
+	textos[16] = { "Rapido",		{125, 125,125} ,font };
 
 	for (int i = 0; i < n; i++)
 	{
-		sFont = TTF_RenderText_Solid(font, textos[i].texto, textos[i].color);
+		sFont = TTF_RenderText_Solid(textos[i].font, textos[i].texto, textos[i].color);
 		intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
 		SDL_BlitSurface(sFont, 0, intermediary, 0);
 
@@ -219,6 +229,87 @@ bool initTextTexture() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	glBindTexture(GL_TEXTURE_2D, NULL);
+
+	// Texturas de la escena de perdida
+	// Las texturas que se guardan en la estructura son:
+	// looseTextTextures[0] = "Que paso Q*ALBERT?"
+	// looseTextTextures[1] = "Perdiste!!"
+	// looseTExtTexture[2] = "Tu puntaje fue"
+	// looseTExtTexture[3] = "Para salir presiona"
+	// looseTextTexture[4] = "Q"
+	// looseTextTexture[5] = "Para volver al menu principal presiona"
+	// looseTextTexture[6] = "M"
+
+	SDL_Surface* sLoose;
+
+	n = 7;
+	looseTextTextures = new GLuint[n];
+	glGenTextures(n, looseTextTextures);
+
+	textos = new _text[n];
+	textos[0] = { "Que paso Q*ALBERT?",		{255,230,0} ,font};
+	textos[1] = { "PERDISTE!",	{255,0,128} ,fontBig};
+	textos[2] = { "Tu puntaje fue ",	{255,255,255} ,font};
+	textos[3] = { "Para salir presiona",	{128,128,128} ,fontSmall};
+	textos[4] = { "Q",	{255,230,0} ,fontSmall};
+	textos[5] = { "Para volver al menu principal presiona",	{128,128,128},fontSmall };
+	textos[6] = { "M",	{255,230,0}, fontSmall };
+
+	for (int i = 0; i < n; i++)
+	{
+		sLoose = TTF_RenderText_Solid(textos[i].font, textos[i].texto, textos[i].color);
+		intermediary = SDL_CreateRGBSurface(0, sLoose->w, sLoose->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		SDL_BlitSurface(sLoose, 0, intermediary, 0);
+
+		glBindTexture(GL_TEXTURE_2D, looseTextTextures[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+			GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glBindTexture(GL_TEXTURE_2D, NULL); // Desbindeo
+	}
+
+	// Texturas de la escena de perdida
+	// Las texturas que se guardan en la estructura son:
+	// winTextTextures[0] = "Buena Q*ALBERT"
+	// winTextTextures[1] = "GANASTE"
+	// winTextTextures[2] = "Para salir presiona"
+	// winTextTextures[3] = "Q"
+	// winTextTextures[4] = "Para volver al menu principal presiona"
+	// winTextTextures[5] = "M"
+
+	SDL_Surface* swIN;
+
+	n = 6;
+	winTextTextures = new GLuint[n];
+	glGenTextures(n, winTextTextures);
+
+	textos = new _text[n];
+	textos[0] = { "Buena Q*ALBERT",		{255,230,0} ,font };
+	textos[1] = { "GANASTE",	{255,0,128} ,fontBig };
+	textos[2] = { "Para salir presiona",	{128,128,128} ,fontSmall };
+	textos[3] = { "Q",	{255,230,0} ,fontSmall };
+	textos[4] = { "Para volver al menu principal presiona",	{128,128,128},fontSmall };
+	textos[5] = { "M",	{255,230,0}, fontSmall };
+
+	for (int i = 0; i < n; i++)
+	{
+		sWin = TTF_RenderText_Solid(textos[i].font, textos[i].texto, textos[i].color);
+		intermediary = SDL_CreateRGBSurface(0, sWin->w, sWin->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
+		SDL_BlitSurface(sWin, 0, intermediary, 0);
+
+		glBindTexture(GL_TEXTURE_2D, winTextTextures[i]);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
+			GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
+
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+		glBindTexture(GL_TEXTURE_2D, NULL); // Desbindeo
+	}
+
 	SDL_FreeSurface(intermediary);
 
 	return true;
@@ -268,82 +359,6 @@ bool initBackgroundTexture()
 	glBindTexture(GL_TEXTURE_2D, NULL);
 
 	return true;
-}
-
-void updateHudTextTexture(string tiempo) {
-
-	if (hudTextTexturesFixed != NULL) {
-		delete[](hudTextTexturesFixed);
-	}
-	if (hudDynamicText != NULL) {
-		delete[](hudDynamicText);
-	}
-	//if (sFont != NULL) {
-	//	delete(sFont);
-	//}
-	//if (intermediary != NULL) {
-	//	delete(intermediary);
-	//}
-
-	SDL_Color color = { 255, 0, 0 };
-
-	intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-
-	SDL_BlitSurface(sFont, 0, intermediary, 0);
-
-	glGenTextures(1, &textTexture);
-
-	// Bindeo la textura para poder usarla en el draw
-	// "Paso" la surface con la textura de texto a la de opengl
-	glBindTexture(GL_TEXTURE_2D, textTexture);
-	GLenum error = glGetError();
-	if (error != GL_NO_ERROR) {
-		printf("Error en el bindtexture dentro del render del texto\n");
-		//printf((const char*)error);
-	}
-
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
-		GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
-
-
-	error = glGetError();
-	if (error != GL_NO_ERROR) {
-		// ESTO DE ACA ABAJO ME ROMPIA EL NSIGHT ANDA A SABER POR QUE
-		//printf("Error en el TexImage dentro del initTextTexture \n");
-		//printf((const char*)error);
-		//return false;
-	}
-
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-
-	int k = 1;
-	hudTextTexturesFixed = new GLuint[k];
-	glGenTextures(k, hudTextTexturesFixed);
-
-	std::string str("Tiempo: " + tiempo);
-	char* cstr = new char[str.length() + 1];
-	std::strcpy(cstr, str.c_str());
-	const char* xD = cstr;
-
-	_text* textos = new _text[k];
-	textos[0] = { xD,	{0,0,255} };
-
-	for (int i = 0; i < k; i++) {
-		sFont = TTF_RenderText_Solid(font, textos[i].texto, textos[i].color);
-		intermediary = SDL_CreateRGBSurface(0, sFont->w, sFont->h, 32, 0x00ff0000, 0x0000ff00, 0x000000ff, 0xff000000);
-		SDL_BlitSurface(sFont, 0, intermediary, 0);
-
-		glBindTexture(GL_TEXTURE_2D, hudTextTexturesFixed[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, intermediary->w, intermediary->h, 0,
-			GL_BGRA, GL_UNSIGNED_BYTE, intermediary->pixels);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		glBindTexture(GL_TEXTURE_2D, NULL); // Desbindeo
-	}
-	delete[](cstr);
-	delete[](textos);
 }
 
 bool initGL() {
@@ -408,7 +423,7 @@ bool initSDL()
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
 
 	//Create window
-	gWindow = SDL_CreateWindow("SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
+	gWindow = SDL_CreateWindow("Q*ALBERT", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_OPENGL | SDL_WINDOW_SHOWN);
 	if (gWindow == NULL)
 	{
 		printf("Window could not be created! SDL Error: %s\n", SDL_GetError());
@@ -441,13 +456,13 @@ bool initSDL()
 		printf("Unable to initialize TextTexture!\n");
 		return(false);
 	}
-
+	
 	if (!initBackgroundTexture())
 	{
 		printf("Unable to initialize BAckgroundTExture!\n");
 		return(false);
 	}
-
+	
 	return true;
 }
 
@@ -665,75 +680,104 @@ void renderPlayer()
 	int oldX = player->oldPosition.x;
 	int oldY = player->oldPosition.y;
 
-	if (player->isMoving) {
-		
-		
-		float distanceDone = player->percentageTraveled;
+	if (!GameManager::GetInstance()->looseCondition && !GameManager::GetInstance()->winCondition)
+	{
+		if (player->isMoving) {
 
-		float traveledY = ((currY - oldY) * distanceDone);
-		float traveledX = ((currX - oldX) * distanceDone);
-		float traveledZ;
-		
-		if (map->GetCubeHeight(currX, currY) == map->GetCubeHeight(oldX, oldY))
-			traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone);
-		else if (map->GetCubeHeight(currX, currY) > map->GetCubeHeight(oldX, oldY))
-			traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) - 1;
-		else
-			traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) + 1;
 
-		if (!settings->varValues[1])
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		
+			float distanceDone = player->percentageTraveled;
 
-		glPushMatrix();
+			float traveledY = ((currY - oldY) * distanceDone);
+			float traveledX = ((currX - oldX) * distanceDone);
+			float traveledZ;
 
-		glTranslatef(oldX + traveledX + 0.5, oldY + traveledY + 0.5, traveledZ);
+			if (map->GetCubeHeight(currX, currY) == map->GetCubeHeight(oldX, oldY))
+				traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone);
+			else if (map->GetCubeHeight(currX, currY) > map->GetCubeHeight(oldX, oldY))
+				traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) - 1;
+			else
+				traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) + 1;
 
-		if (player->direction == Direction::up)
-			glRotatef(90, 0, 0, 1);
+			if (!settings->varValues[1])
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
-		if (player->direction == Direction::down)
-			glRotatef(-90, 0, 0, 1);
 
-		if (player->direction == Direction::left)
-			glRotatef(180, 0, 0, 1);
+			glPushMatrix();
 
-		glTranslatef(-0.5, -0.5, 0);
+			glTranslatef(oldX + traveledX + 0.5, oldY + traveledY + 0.5, traveledZ);
 
-		player->draw();
+			if (player->direction == Direction::up)
+				glRotatef(90, 0, 0, 1);
 
-		glPopMatrix();
+			if (player->direction == Direction::down)
+				glRotatef(-90, 0, 0, 1);
 
-		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
-		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+			if (player->direction == Direction::left)
+				glRotatef(180, 0, 0, 1);
 
+			glTranslatef(-0.5, -0.5, 0);
+
+			player->draw();
+
+			glPopMatrix();
+
+			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+
+		}
+		else {
+
+			if (!settings->varValues[1])
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+			glPushMatrix();
+
+			glTranslatef(currX + 0.5, currY + 0.5, 0);
+
+			if (player->direction == Direction::up)
+				glRotatef(90, 0, 0, 1);
+
+			if (player->direction == Direction::down)
+				glRotatef(-90, 0, 0, 1);
+
+			if (player->direction == Direction::left)
+				glRotatef(180, 0, 0, 1);
+
+			glTranslatef(-0.5, -0.5, 0);
+
+			player->draw();
+
+			glPopMatrix();
+
+		}
 	}
-	else {
-
+	else
+	{
 		if (!settings->varValues[1])
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 
 		glPushMatrix();
-		
+
 		glTranslatef(currX + 0.5, currY + 0.5, 0);
-		
-		if (player->direction == Direction::up)
-			glRotatef(90, 0, 0, 1);
 
-		if (player->direction == Direction::down)
-			glRotatef(-90, 0, 0, 1);
+		glRotatef(45, 0, 0, 1);
 
-		if (player->direction == Direction::left)
-			glRotatef(180, 0, 0, 1);
-				
 		glTranslatef(-0.5, -0.5, 0);
 
 		player->draw();
+		if (GameManager::GetInstance()->looseCondition)
+		{
+			glRotatef(90, 0, 0, 1);
+			glTranslatef(0.5, -1, 0.5);
+			player->drawBalloon();
+		}
 		
 		glPopMatrix();
 
+
 		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
 		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+
 
 	}
 	
@@ -751,9 +795,81 @@ void renderEnemy()
 
 		int oldX = (*iterEnemy)->oldPosition.x;
 		int oldY = (*iterEnemy)->oldPosition.y;
+		if (!GameManager::GetInstance()->looseCondition && !GameManager::GetInstance()->winCondition)
+		{
+			if ((*iterEnemy)->isMoving) {
 
-		if ((*iterEnemy)->isMoving) {
+				float distanceDone = (*iterEnemy)->percentageTraveled;
 
+				float traveledY = ((currY - oldY) * distanceDone);
+				float traveledX = ((currX - oldX) * distanceDone);
+				float traveledZ;
+
+				if (map->GetCubeHeight(currX, currY) == map->GetCubeHeight(oldX, oldY))
+					traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone);
+				else if (map->GetCubeHeight(currX, currY) > map->GetCubeHeight(oldX, oldY))
+					traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) - 1;
+				else
+					traveledZ = ((map->GetCubeHeight(currX, currY) - map->GetCubeHeight(oldX, oldY)) * distanceDone) + 1;
+
+				if (!settings->varValues[1])
+					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+				glPushMatrix();
+
+				glTranslatef(oldX + traveledX + 0.5, oldY + traveledY + 0.5, traveledZ);
+
+				if ((*iterEnemy)->direction == Direction::up)
+					glRotatef(90, 0, 0, 1);
+
+				if ((*iterEnemy)->direction == Direction::down)
+					glRotatef(-90, 0, 0, 1);
+
+				if ((*iterEnemy)->direction == Direction::left)
+					glRotatef(180, 0, 0, 1);
+
+				glTranslatef(-0.5, -0.5, 0);
+
+				dynamic_cast<Enemy*>(*iterEnemy)->draw();
+
+				glPopMatrix();
+
+			}
+			else
+			{
+
+				if (!settings->varValues[1])
+					glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+				glPushMatrix();
+
+				glTranslatef(currX + 0.5, currY + 0.5, 0);
+
+				if ((*iterEnemy)->direction == Direction::up)
+					glRotatef(90, 0, 0, 1);
+
+				if ((*iterEnemy)->direction == Direction::down)
+					glRotatef(-90, 0, 0, 1);
+
+				if ((*iterEnemy)->direction == Direction::left)
+					glRotatef(180, 0, 0, 1);
+
+				glTranslatef(-0.5, -0.5, 0);
+
+				dynamic_cast<Enemy*>(*iterEnemy)->draw();
+
+				glPopMatrix();
+
+
+				glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+				glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+
+
+			}
+
+		}
+		else
+		{
 			float distanceDone = (*iterEnemy)->percentageTraveled;
 
 			float traveledY = ((currY - oldY) * distanceDone);
@@ -772,56 +888,17 @@ void renderEnemy()
 
 			glPushMatrix();
 
-			glTranslatef(oldX + traveledX + 0.5, oldY + traveledY + 0.5, traveledZ);
-
-			if ((*iterEnemy)->direction == Direction::up)
-				glRotatef(90, 0, 0, 1);
-
-			if ((*iterEnemy)->direction == Direction::down)
-				glRotatef(-90, 0, 0, 1);
-
-			if ((*iterEnemy)->direction == Direction::left)
-				glRotatef(180, 0, 0, 1);
+			glTranslatef(oldX + traveledX + 0.6 , oldY + traveledY +0.6, traveledZ + 0.5);
 
 			glTranslatef(-0.5, -0.5, 0);
 
-			dynamic_cast<Enemy*>(*iterEnemy)->draw();
+			dynamic_cast<Enemy*>(*iterEnemy)->drawDeath();
 
 			glPopMatrix();
 
 			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
 			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
-
 		}
-		else 
-		{
-
-			if (!settings->varValues[1])
-				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-
-			glPushMatrix();
-
-			glTranslatef(currX + 0.5, currY + 0.5, 0);
-
-			if ((*iterEnemy)->direction == Direction::up)
-				glRotatef(90, 0, 0, 1);
-
-			if ((*iterEnemy)->direction == Direction::down)
-				glRotatef(-90, 0, 0, 1);
-
-			if ((*iterEnemy)->direction == Direction::left)
-				glRotatef(180, 0, 0, 1);
-
-			glTranslatef(-0.5, -0.5, 0);
-
-			dynamic_cast<Enemy*>(*iterEnemy)->draw();
-
-			glPopMatrix();
-
-			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
-			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
-
-		}		
 		
 	}
 }
@@ -914,29 +991,71 @@ void setTimeTexture(Uint32 newTime)
 
 void renderHud()
 {
-	float z = 0.5;
-
-	glColor3f(1.0f, 0.0f, 0.0);
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-	glBegin(GL_QUADS);
-
-	glVertex3f(10.0, 10.0, z);
-	glVertex3f(10.0, 100.0, z);
-	glVertex3f(100.0, 100.0, z);
-	glVertex3f(100.0, 10.0, z);
-	
-
-	glEnd();
-	
-	if (actualScore != ScoreKeeper::GetInstance()->getScore())
+	if (GameManager::GetInstance()->winCondition)
 	{
-		setScoreTexture(ScoreKeeper::GetInstance()->getScore());
+		renderTextTexture(winTextTextures[0], SCREEN_WIDTH / 3, 10);
+
+		renderTextTexture(winTextTextures[1], 30 , 60);
+		renderTextTexture(winTextTextures[1], 30, 90);
+		renderTextTexture(winTextTextures[1], 30, 120);
+		renderTextTexture(winTextTextures[1], 30, 150);
+
+		renderTextTexture(winTextTextures[2], SCREEN_WIDTH / 3, 400);
+		renderTextTexture(winTextTextures[3], SCREEN_WIDTH / 1.8, 400);
+		//renderTextTexture(looseTextTextures[5], SCREEN_WIDTH / 3, 450);
+		//renderTextTexture(looseTextTextures[6], SCREEN_WIDTH / 2 + 300, 450);
 	}
+	else if (GameManager::GetInstance()->looseCondition)
+	{
+		// Texturas de la escena de perdida
+		// Las texturas que se guardan en la estructura son:
+		// looseTextTextures[0] = "Que paso Q*ALBERT?"
+		// looseTextTextures[1] = "Perdiste!!"
+		// looseTExtTexture[2] = "Tu puntaje fue"
+		// looseTExtTexture[3] = "Para salir presiona"
+		// looseTextTexture[4] = "Q"
+		// looseTextTexture[5] = "Para volver al menu principal presiona"
+		// looseTextTexture[6] = "M"
+		renderTextTexture(looseTextTextures[0], SCREEN_WIDTH / 3, 10);
+		renderTextTexture(looseTextTextures[1], SCREEN_WIDTH / 5, 60);
+		renderTextTexture(looseTextTextures[1], SCREEN_WIDTH /2, 50);
+		renderTextTexture(looseTextTextures[2], SCREEN_WIDTH / 2, 100);
 
-	renderTextTexture(scoreTexture, SCREEN_WIDTH - 40 , 10);
+		renderTextTexture(scoreTexture, SCREEN_WIDTH /2 + 110, 130);
 
-	setTimeTexture(floor(GameManager::GetInstance()->getPlayTime()/1000));
-	renderTextTexture(timeTexture, SCREEN_WIDTH/2, 10);
+		renderTextTexture(looseTextTextures[3], SCREEN_WIDTH / 3, 400);
+		renderTextTexture(looseTextTextures[4], SCREEN_WIDTH / 1.8, 400);
+		//renderTextTexture(looseTextTextures[5], SCREEN_WIDTH / 3, 450);
+		//renderTextTexture(looseTextTextures[6], SCREEN_WIDTH / 2 + 300, 450);
+	}
+	else
+	{
+		float z = 0.5;
+
+		glColor3f(1.0f, 0.0f, 0.0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glBegin(GL_QUADS);
+
+		glVertex3f(10.0, 10.0, z);
+		glVertex3f(10.0, 100.0, z);
+		glVertex3f(100.0, 100.0, z);
+		glVertex3f(100.0, 10.0, z);
+
+
+		glEnd();
+
+		if (actualScore != ScoreKeeper::GetInstance()->getScore())
+		{
+			setScoreTexture(ScoreKeeper::GetInstance()->getScore());
+		}
+
+		renderTextTexture(scoreTexture, SCREEN_WIDTH - 40, 10);
+
+		setTimeTexture(max(0, (int)floor(TOTAL_GAME_TIME - (GameManager::GetInstance()->getPlayTime() / 1000))));
+
+		renderTextTexture(timeTexture, SCREEN_WIDTH / 2, 10);
+	}
+	
 }
 
 void renderSettings()
@@ -1021,6 +1140,7 @@ void renderSettings()
 
 void renderBackground()
 {
+
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 10000);
@@ -1066,6 +1186,8 @@ void renderBackground()
 
 	glDisable(GL_TEXTURE_2D);
 
+	glDepthMask(GL_TRUE);
+	glEnable(GL_DEPTH_TEST);
 }
 
 
@@ -1083,10 +1205,7 @@ int render()
 	//Clean Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	//Dibujado del fondo
-	renderBackground();
-
-	//Modificación del color de la luz ambiente según input
+	//Modificaci? del color de la luz ambiente seg?n input
 	GLfloat ambientColor[4] = { 0.5, 0.5, 0.5, 1.0 };
 
 	if (settings->lightColor == lightColors::red) {
@@ -1125,6 +1244,12 @@ int render()
 
 	//glDepthMask(GL_TRUE);
 	glEnable(GL_DEPTH_TEST);
+	
+	// Dibujado de objetos 2d (Background)
+	if (Settings::GetInstance()->varValues[2])
+	{
+		renderBackground();
+	}
 
 	//Dibujado de objetos 3D
 	updateCamera3d();
@@ -1149,7 +1274,7 @@ int render()
 	// Desactivo el depth_test para que el hud se dibuje por delante
 	//glDisable(GL_DEPTH_TEST);
 
-	if (InputHandler::GetInstance()->settingsOn)
+	if (InputHandler::GetInstance()->settingsOn && !GameManager::GetInstance()->looseCondition)
 	{
 		renderSettings();
 	}

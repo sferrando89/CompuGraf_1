@@ -69,6 +69,9 @@ GameManager::GameManager()
 	//cout << "----------------" << "\n";
 
 	gameMap->PrintWithCharacter(0, 0);
+
+	looseCondition = false;
+	winCondition = false;
 }
 
 void GameManager::HandleMovement(SDL_Keycode key) {
@@ -148,28 +151,28 @@ void GameManager::HandleMovement(SDL_Keycode key) {
 		if (!player->isMoving) {
 			bool sigo = false;
 			switch (key) {
-				case SDLK_w:
+				case SDLK_s:
 					newDir = Direction::up;
 					new_x = old_x;
 					new_y = old_y + 1;
 					sigo = true;
 					break;
 
-				case SDLK_a:
+				case SDLK_d:
 					newDir = Direction::left;
 					new_x = old_x - 1;
 					new_y = old_y;
 					sigo = true;
 					break;
 
-				case SDLK_s:
+				case SDLK_w:
 					newDir = Direction::down;
 					new_x = old_x;
 					new_y = old_y - 1;
 					sigo = true;
 					break;
 
-				case SDLK_d:
+				case SDLK_a:
 					newDir = Direction::right;
 					new_x = old_x + 1;
 					new_y = old_y;

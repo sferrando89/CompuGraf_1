@@ -9,6 +9,8 @@
 #include "Direction.h"
 #include "Settings.h"
 
+const int TOTAL_GAME_TIME = 120;
+
 // GameManager es singleton
 class GameManager
 {
@@ -20,6 +22,7 @@ class GameManager
 		Ficha* player;
         LTimer timer;
         list<Ficha*>* enemies;
+
     public:
         static GameManager* GetInstance();
 		void HandleMovement(SDL_Keycode key);
@@ -32,4 +35,6 @@ class GameManager
         Uint32 getPlayTime();
         void moveEnemies();
         bool detectColision();
+        bool looseCondition;
+        bool winCondition;
 };

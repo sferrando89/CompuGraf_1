@@ -33,6 +33,8 @@ Player::Player(Vector3 position, Direction init_direction)
 	model.mesh_right_eye = loadOBJ("models/Ojo_Derecho.obj");
 	model.mesh_left_foot = loadOBJ("models/Pie_Izquierdo.obj");
 	model.mesh_right_foot = loadOBJ("models/Pie_Derecho.obj");
+	balloonModel.mesh_balloon = loadOBJ("models/Globo.obj");
+	balloonModel.mesh_balloon_text = loadOBJ("models/Texto_globo.obj");
 }
 
 void Player::draw()
@@ -80,6 +82,26 @@ void Player::draw()
 	{
 		glNormal3f(model.mesh_right_foot[j].getX(), model.mesh_right_foot[j].getY(), model.mesh_right_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 		glVertex3f(model.mesh_right_foot[j].getX(), model.mesh_right_foot[j].getY(), model.mesh_right_foot[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
+	}
+
+	glEnd();
+}
+
+void Player::drawBalloon()
+{
+	glBegin(GL_TRIANGLES);
+	//Dibjo gLOBO
+	glColor3f(1.0f, 1.0f, 1.0f);
+	for (int j = 0; j < balloonModel.mesh_balloon.size(); j++)
+	{
+		glVertex3f(balloonModel.mesh_balloon[j].getX(), balloonModel.mesh_balloon[j].getY(), balloonModel.mesh_balloon[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
+	}
+
+	//Dibjo gLOBO
+	glColor3f(0.0f, 0.0f, 0.0f);
+	for (int j = 0; j < balloonModel.mesh_balloon_text.size(); j++)
+	{
+		glVertex3f(balloonModel.mesh_balloon_text[j].getX(), balloonModel.mesh_balloon_text[j].getY(), balloonModel.mesh_balloon_text[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
 	}
 
 	glEnd();
