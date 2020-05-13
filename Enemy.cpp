@@ -41,3 +41,17 @@ void Enemy::draw()
 	}
 	glEnd();
 }
+
+void Enemy::drawDeath()
+{
+	//Dibujo al personaje
+	glBegin(GL_TRIANGLES);
+	//Dibujo cuerpo
+	glColor3f(0, 1, 0);
+	for (int j = 0; j < model.mesh_death.size(); j++)
+	{
+		glVertex3f(model.mesh_death[j].getX(), model.mesh_death[j].getY(), model.mesh_death[j].getZ() + map->GetCubeHeight(currentPosition.x, currentPosition.y));
+	}
+	
+	glEnd();
+}
