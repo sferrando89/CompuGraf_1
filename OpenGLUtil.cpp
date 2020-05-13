@@ -54,6 +54,9 @@ Map* map = gamemanager->getGameMap();
 Settings* settings = Settings::GetInstance();
 
 
+GLfloat lightPosition0[] = {0, 0, 10, 1};
+GLfloat lightPosition1[] = { 8.0 , 8.0 , 0.0, 0.0 };
+
 template<typename T>
 std::ostream& operator<<(typename std::enable_if<std::is_enum<T>::value, std::ostream>::type& stream, const T& e)
 {
@@ -360,11 +363,26 @@ bool initGL() {
 	//Initialize Clear Color
 	glClearColor(0.f, 0.f, 0.f, 0.f);
 
-	glEnable(GL_DEPTH_TEST);
+	//Add ambient light
+	GLfloat ambientColor[] = { 0.5, 0.5, 0.5, 1.0 };
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+	//glEnable(GL_DEPTH_TEST);
 
-	glLoadIdentity();
-	//mapCenter = GameManager::GetInstance()->getGameMap().getMapCenter();
-	//gluLookAt(mapCenter.getX(), mapCenter.getY(), mapCenter.getZ(), 0, 0, 0, 0, 0, 1);
+	//Add positioned light
+	GLfloat lightColor0[] = { 1.0, 0.6, 0.6, 1 };
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, lightColor0);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+
+	//Add directed light
+	GLfloat lightColor1[] = { 0.01, 0.01, 0.01, 1.0 };
+	glLightfv(GL_LIGHT1, GL_DIFFUSE, lightColor1);
+	glLightfv(GL_LIGHT1, GL_POSITION, lightPosition1);
+
+	glEnable(GL_COLOR_MATERIAL);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+	glEnable(GL_NORMALIZE);
 
 	//Check For Error
 	GLenum error = glGetError();
@@ -372,7 +390,6 @@ bool initGL() {
 		//printf("Error initializing OpenGL! %s\n");
 		return false;
 	}
-
 
 	return true;
 }
@@ -447,10 +464,17 @@ void updateCamera3d()
 			-SCREEN_HEIGHT / size,
 			SCREEN_HEIGHT / size,
 			-100, 100);
+		
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+
 	}
 	else
 	{
 		gluPerspective(800, SCREEN_WIDTH / SCREEN_HEIGHT, 0.8, 100);
+
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
 	}
 	
 	glMatrixMode(GL_MODELVIEW);
@@ -469,6 +493,10 @@ void updateCamera3d()
 
 	}
 	Camera::GetInstance()->apply();
+
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+
 }
 
 void renderMap()
@@ -500,54 +528,67 @@ void renderMap()
 					glNormal3f(j, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i));
 
-					glColor3f(1, 0, 0);
 					//FRONT
+					glColor3f(0, 0, 0);
 					glNormal3f(j, i, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i, map->GetCubeHeight(j, i) - 1);
 					glNormal3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
+					glColor3f(1, 0, 0);
 					glNormal3f(j + 1, i, map->GetCubeHeight(j, i));
 					glVertex3f(j + 1, i, map->GetCubeHeight(j, i));
 					glNormal3f(j, i, map->GetCubeHeight(j, i));
 					glVertex3f(j, i, map->GetCubeHeight(j, i));
 
 					//RIGHT
+					glColor3f(0, 0, 0);
 					glNormal3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
 					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
+					glColor3f(1, 0, 0);
 					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i));
 					glNormal3f(j + 1, i, map->GetCubeHeight(j, i));
 					glVertex3f(j + 1, i, map->GetCubeHeight(j, i));					
 
 					//DOWN
+					glColor3f(0, 0, 1);
 					glNormal3f(j, i, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i, map->GetCubeHeight(j, i) - 1);
+					glColor3f(1, 0, 0);
 					glNormal3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
+					glColor3f(0, 0, 1);
 					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
+					glColor3f(1, 0, 0);
 					glNormal3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j + 1, i, map->GetCubeHeight(j, i) - 1);
 
 					//LEFT
+					glColor3f(0, 0, 0);
 					glNormal3f(j, i, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i, map->GetCubeHeight(j, i) - 1);
+					glColor3f(1, 0, 0);
 					glNormal3f(j, i, map->GetCubeHeight(j, i));
-					glVertex3f(j, i, map->GetCubeHeight(j, i));
+					glVertex3f(j, i, map->GetCubeHeight(j, i));					
 					glNormal3f(j, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i));
+					glColor3f(0, 0, 0);
 					glNormal3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
 
 					//BACK
+					glColor3f(0, 0, 0);
 					glNormal3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i) - 1);
+					glColor3f(1, 0, 0);
 					glNormal3f(j, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j, i + 1, map->GetCubeHeight(j, i));
 					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i));
 					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i));
+					glColor3f(0, 0, 0);
 					glNormal3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
 					glVertex3f(j + 1, i + 1, map->GetCubeHeight(j, i) - 1);
 
@@ -663,6 +704,9 @@ void renderPlayer()
 
 		glPopMatrix();
 
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+
 	}
 	else {
 
@@ -687,6 +731,9 @@ void renderPlayer()
 		player->draw();
 		
 		glPopMatrix();
+
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+		glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
 
 	}
 	
@@ -742,6 +789,9 @@ void renderEnemy()
 
 			glPopMatrix();
 
+			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
+
 		}
 		else 
 		{
@@ -767,6 +817,9 @@ void renderEnemy()
 			dynamic_cast<Enemy*>(*iterEnemy)->draw();
 
 			glPopMatrix();
+
+			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition0);
+			glLightfv(GL_LIGHT0, GL_POSITION, lightPosition1);
 
 		}		
 		
@@ -968,6 +1021,30 @@ void renderSettings()
 
 void renderBackground()
 {
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 10000);
+
+	glDisable(GL_DEPTH_TEST);
+	glMatrixMode(GL_MODELVIEW);
+	glLoadIdentity();
+
+	// Traslado el objeto al 0,0
+	glTranslatef(400,
+		400,
+		0);
+
+	// Lo roto
+	rotationAngle += 0.1;
+	glRotatef(rotationAngle,
+		0,
+		0,
+		1);
+
+	// Traslado el objeto para que quede centrado en la pantalla
+	glTranslatef(-600,
+		-600,
+		0);
 
 	glBindTexture(GL_TEXTURE_2D, backgroundTexture);
 	glEnable(GL_TEXTURE_2D);
@@ -991,43 +1068,63 @@ void renderBackground()
 
 }
 
+
 int render()
 {
+	//Prendo o apago el interpolado
+	if (settings->varValues[3])
+		glShadeModel(GL_SMOOTH);
+	else
+		glShadeModel(GL_FLAT);
+
+	glDisable(GL_LIGHT0);
+	glDisable(GL_LIGHT1);
+
 	//Clean Buffers
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	//Dibujado del fondo
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 10000);
-
-	glDisable(GL_DEPTH_TEST);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	
-	// Traslado el objeto al 0,0
-	glTranslatef(400,
-		400,
-		0);
-		
-	// Lo roto
-	rotationAngle += 0.1;
-	glRotatef(rotationAngle,
-		0,
-		0,
-		1);
-	
-	// Traslado el objeto para que quede centrado en la pantalla
-	glTranslatef(-600,
-		-600,
-		0);
-		
 	renderBackground();
-	
 
-	glDepthMask(GL_TRUE);
+	//Modificación del color de la luz ambiente según input
+	GLfloat ambientColor[4] = { 0.5, 0.5, 0.5, 1.0 };
+
+	if (settings->lightColor == lightColors::red) {
+		ambientColor[0] = 1.0;
+		ambientColor[1] = 0.0;
+		ambientColor[2] = 0.0;
+	}
+	else if (settings->lightColor == lightColors::blue)
+	{
+		ambientColor[0] = 0.0;
+		ambientColor[1] = 0.0;
+		ambientColor[2] = 1.0;
+	}
+	else if (settings->lightColor == lightColors::green)
+	{
+		ambientColor[0] = 0.0;
+		ambientColor[1] = 1.0;
+		ambientColor[2] = 0.0;
+	}
+
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, ambientColor);
+
+	if (settings->lightDirection == 1)
+	{
+		lightPosition1[0] = 0.0;
+		lightPosition1[1] = 8.0;
+	}
+	else
+	{
+		lightPosition1[1] = 0.0;
+		lightPosition1[0] = 8.0;
+	}
+
+	glEnable(GL_LIGHT0);
+	glEnable(GL_LIGHT1);
+
+	//glDepthMask(GL_TRUE);
 	glEnable(GL_DEPTH_TEST);
-
 
 	//Dibujado de objetos 3D
 	updateCamera3d();
@@ -1035,9 +1132,14 @@ int render()
 	renderMap();
 
 	renderPlayer();
+
 	renderEnemy();
 
+	//glEnable(GL_DEPTH_TEST);
+	glDisable(GL_LIGHTING);
+
 	//Dibujado de objetos 2D (HUD)
+	glDisable(GL_DEPTH_TEST);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	glOrtho(0, SCREEN_WIDTH, SCREEN_HEIGHT, 0, -1, 100000);
@@ -1045,7 +1147,7 @@ int render()
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 	// Desactivo el depth_test para que el hud se dibuje por delante
-	glDisable(GL_DEPTH_TEST);
+	//glDisable(GL_DEPTH_TEST);
 
 	if (InputHandler::GetInstance()->settingsOn)
 	{
@@ -1056,10 +1158,9 @@ int render()
 		renderHud();
 	}
 
-	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_LIGHTING);
 
-
-
+	glFlush();
 	//Update screen
 	SDL_GL_SwapWindow(gWindow);
 

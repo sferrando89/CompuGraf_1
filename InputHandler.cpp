@@ -30,11 +30,13 @@ bool InputHandler::Handle() {
 			if (event.key.keysym.sym == SDLK_q) {
 				return true;
 			}
-
 			else if (event.key.keysym.sym == SDLK_l)
-
 			{
-				
+				Settings::GetInstance()->changeLightColor();
+			}
+			else if (event.key.keysym.sym == SDLK_c)
+			{
+				Settings::GetInstance()->changeLightDirection();
 			}
 			else if (event.key.keysym.sym == SDLK_p)
 			{

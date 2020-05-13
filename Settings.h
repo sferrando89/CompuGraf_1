@@ -2,6 +2,8 @@
 #include <SDL.h>
 
 enum class CameraModes {isometric, free, firstPerson};
+enum class lightColors {red, green, blue, normal};
+
 CameraModes operator++(CameraModes& d, int);
 
 class Settings
@@ -22,7 +24,12 @@ class Settings
 
 		CameraModes cameraMode; 
 
+		lightColors lightColor;
+		int lightDirection;
+
 		int settingSelected;
 		void HandleMovement(SDL_Keycode key);
+		void changeLightColor();
+		void changeLightDirection();
 };
 

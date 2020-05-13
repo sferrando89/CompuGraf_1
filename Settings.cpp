@@ -38,6 +38,9 @@ Settings::Settings()
 	settingSelected = 1;
 
 	cameraMode = CameraModes::isometric;
+
+	lightColor = lightColors::normal;
+	lightDirection = 0;
 }
 
 void Settings::HandleMovement(SDL_Keycode key)
@@ -86,4 +89,24 @@ void Settings::HandleMovement(SDL_Keycode key)
 		}
 	}
 		
+}
+
+void Settings::changeLightColor()
+{
+	if (lightColor == lightColors::normal)
+		lightColor = lightColors::red;
+	else if (lightColor == lightColors::red)
+		lightColor = lightColors::blue;
+	else if (lightColor == lightColors::blue)
+		lightColor = lightColors::green;
+	else if (lightColor == lightColors::green)
+		lightColor = lightColors::normal;
+}
+
+void Settings::changeLightDirection()
+{
+	if (lightDirection == 0)
+		lightDirection = 1;
+	else
+		lightDirection = 0;
 }

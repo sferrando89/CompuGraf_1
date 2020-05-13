@@ -151,9 +151,9 @@ void Camera::apply()
 			gluLookAt(	S_RADIO ,
 						S_RADIO ,
 						S_RADIO ,
-						player->currentPosition.x,
-						player->currentPosition.y,
-						player->currentPosition.z  + GameManager::GetInstance()->getGameMap()->isometricOffset,
+						mapCenter.getX(),
+						mapCenter.getY(),
+						mapCenter.getZ() + GameManager::GetInstance()->getGameMap()->isometricOffset,
 						0, 0, 1);
 			break;
 	}
