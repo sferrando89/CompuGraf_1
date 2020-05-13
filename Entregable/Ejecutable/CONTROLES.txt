@@ -1,0 +1,14 @@
+Moverse:
+W,A,S,D
+
+Cambio posicion luces:
+C
+
+Cambio color luces:
+L
+
+Pausa y menu:
+P
+
+Cambiar opciones de menu:
+W,A,S,D
